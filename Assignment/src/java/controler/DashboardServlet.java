@@ -1,4 +1,3 @@
-
 package controler;
 
 import java.io.IOException;

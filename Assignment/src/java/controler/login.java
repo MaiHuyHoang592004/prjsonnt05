@@ -1,20 +1,34 @@
 package controler;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name="login", urlPatterns={"/login"})
 public class login extends HttpServlet {
+
+    private Properties loadDBProperties() throws IOException {
+        Properties properties = new Properties();
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("db.properties")) {
+            if (input == null) {
+                throw new IOException("Sorry, unable to find db.properties");
+            }
+            properties.load(input);
+        }
+        return properties;
+    }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
@@ -24,8 +38,12 @@ public class login extends HttpServlet {
             String password = request.getParameter("password");
 
             if (username != null && password != null) {
-                if (validateLogin(username, password)) {
-                    out.println("<h1>Đăng nhập thành công!</h1>");
+                String role = validateLogin(username, password);
+                if (role != null) {
+                    HttpSession session = request.getSession();
+                    session.setAttribute("username", username);
+                    session.setAttribute("role", role);
+                    response.sendRedirect("dashboard");
                 } else {
                     out.println("<h1>Đăng nhập thất bại. Vui lòng thử lại.</h1>");
                 }
@@ -74,16 +92,24 @@ public class login extends HttpServlet {
         }
     }
 
-    private boolean validateLogin(String username, String password) {
-        boolean isValid = false;
-        String jdbcURL = "jdbc:mysql://localhost:3306/yourdatabase";
-        String dbUser = "yourdbuser";
-        String dbPassword = "yourdbpassword";
+    private String validateLogin(String username, String password) {
+        String role = null;
+        Properties properties;
+        try {
+            properties = loadDBProperties();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        String jdbcURL = properties.getProperty("db.url");
+        String dbUser = properties.getProperty("db.username");
+        String dbPassword = properties.getProperty("db.password");
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             Connection connection = DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
-            String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+            String sql = "SELECT ur.RoleID FROM [User] u JOIN [UserRole] ur ON u.UserName = ur.UserName WHERE u.UserName = ? AND u.password = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, username);
             statement.setString(2, password);
@@ -91,7 +117,24 @@ public class login extends HttpServlet {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                isValid = true;
+                int roleId = resultSet.getInt("RoleID");
+                switch (roleId) {
+                    case 1:
+                        role = "Quản đốc";
+                        break;
+                    case 2:
+                        role = "Nhân viên quản lý kế hoạch sản xuất";
+                        break;
+                    case 3:
+                        role = "Nhân viên quản lý nhân sự";
+                        break;
+                    case 4:
+                        role = "Công nhân";
+                        break;
+                    default:
+                        role = null;
+                        break;
+                }
             }
 
             connection.close();
@@ -99,7 +142,7 @@ public class login extends HttpServlet {
             e.printStackTrace();
         }
 
-        return isValid;
+        return role;
     }
 
     @Override
