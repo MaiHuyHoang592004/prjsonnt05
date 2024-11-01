@@ -1,14 +1,12 @@
 package controler;
 
+import company.database.DatabaseConnection;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,17 +16,6 @@ import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name="login", urlPatterns={"/login"})
 public class login extends HttpServlet {
-
-    private Properties loadDBProperties() throws IOException {
-        Properties properties = new Properties();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("db.properties")) {
-            if (input == null) {
-                throw new IOException("Sorry, unable to find db.properties");
-            }
-            properties.load(input);
-        }
-        return properties;
-    }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
@@ -94,21 +81,7 @@ public class login extends HttpServlet {
 
     private String validateLogin(String username, String password) {
         String role = null;
-        Properties properties;
-        try {
-            properties = loadDBProperties();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        String jdbcURL = properties.getProperty("db.url");
-        String dbUser = properties.getProperty("db.username");
-        String dbPassword = properties.getProperty("db.password");
-
-        try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            Connection connection = DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
+        try (Connection connection = DatabaseConnection.getConnection()) {
             String sql = "SELECT ur.RoleID FROM [User] u JOIN [UserRole] ur ON u.UserName = ur.UserName WHERE u.UserName = ? AND u.password = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, username);
@@ -136,9 +109,7 @@ public class login extends HttpServlet {
                         break;
                 }
             }
-
-            connection.close();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 

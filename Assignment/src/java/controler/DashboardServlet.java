@@ -69,6 +69,9 @@ public class DashboardServlet extends HttpServlet {
                 out.println("<p>Thông tin về ca làm việc...</p>");
                 out.println("<h2>Bảng công cá nhân</h2>");
                 out.println("<p>Thông tin về công làm việc...</p>");
+            } else {
+                out.println("<h2>Vai trò không xác định</h2>");
+                out.println("<p>Vui lòng liên hệ quản trị viên để được hỗ trợ.</p>");
             }
 
             out.println("</div>");
