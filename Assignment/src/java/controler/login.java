@@ -48,7 +48,6 @@ public class login extends HttpServlet {
                 out.println(".login-container input[type=\"submit\"] { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }");
                 out.println(".login-container input[type=\"submit\"]:hover { background-color: #45a049; }");
                 out.println(".login-container .remember-me { text-align: left; margin: 10px 0; }");
-                out.println(".login-container .forgot-password { text-align: right; margin: 10px 0; }");
                 out.println(".footer { position: absolute; bottom: 0; width: 100%; text-align: center; padding: 10px; background-color: #fff; border-top: 1px solid #ccc; }");
                 out.println("</style>");
                 out.println("</head>");
@@ -62,9 +61,6 @@ public class login extends HttpServlet {
                 out.println("<div class=\"remember-me\">");
                 out.println("<input type=\"checkbox\" id=\"remember\" name=\"remember\">");
                 out.println("<label for=\"remember\">Ghi nhớ tài khoản</label>");
-                out.println("</div>");
-                out.println("<div class=\"forgot-password\">");
-                out.println("<a href=\"forgot-password\">Quên mật khẩu?</a>");
                 out.println("</div>");
                 out.println("<input type=\"submit\" value=\"Đăng nhập\">");
                 out.println("</form>");

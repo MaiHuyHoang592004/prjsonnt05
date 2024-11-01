@@ -31,6 +31,11 @@ public class DashboardServlet extends HttpServlet {
             out.println(".menu { margin: 20px 0; }");
             out.println(".menu a { margin: 0 10px; text-decoration: none; color: #4CAF50; }");
             out.println("</style>");
+            out.println("<script>");
+            out.println("window.onload = function() {");
+            out.println("alert('Chào mừng " + role + " " + username + "! Bạn có quyền truy cập: " + role + "');");
+            out.println("};");
+            out.println("</script>");
             out.println("</head>");
             out.println("<body>");
             out.println("<div class=\"header\">");
