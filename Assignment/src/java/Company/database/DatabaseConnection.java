@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-
-/**
- *
- * @author huyho
- */
 package company.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
@@ -28,5 +20,28 @@ public class DatabaseConnection {
             e.printStackTrace();
         }
         return connection;
+    }
+
+    public static void testConnection() {
+        try (Connection connection = getConnection()) {
+            if (connection != null) {
+                System.out.println("Kết nối thành công!");
+                String sql = "SELECT 1";
+                try (PreparedStatement statement = connection.prepareStatement(sql);
+                     ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        System.out.println("Truy vấn thành công!");
+                    }
+                }
+            } else {
+                System.out.println("Kết nối thất bại!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        testConnection();
     }
 }
