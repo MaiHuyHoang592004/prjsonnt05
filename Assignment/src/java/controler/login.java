@@ -1,53 +1,89 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-
 package controler;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author huyho
- */
 @WebServlet(name="login", urlPatterns={"/login"})
 public class login extends HttpServlet {
-   
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Đăng nhập - Công ty ABC</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Công TY ABC</h1>");
-            out.println("<form action=\"/login\" method=\"post\">");
-            out.println("<label for=\"username\">Tên đăng nhập:</label><br>");
-            out.println("<input type=\"text\" id=\"username\" name=\"username\"><br>");
-            out.println("<label for=\"password\">Mật khẩu:</label><br>");
-            out.println("<input type=\"password\" id=\"password\" name=\"password\"><br><br>");
-            out.println("<input type=\"submit\" value=\"Đăng nhập\">");
-            out.println("</form>");
-            out.println("</body>");
-            out.println("</html>");
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+
+            if (username != null && password != null) {
+                if (validateLogin(username, password)) {
+                    out.println("<h1>Đăng nhập thành công!</h1>");
+                } else {
+                    out.println("<h1>Đăng nhập thất bại. Vui lòng thử lại.</h1>");
+                }
+            } else {
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Đăng nhập - Quản lý nhân sự ABC</title>");
+                out.println("<style>");
+                out.println("body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; background-color: #f0f0f0; }");
+                out.println(".login-container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: center; }");
+                out.println(".login-container h1 { margin-bottom: 20px; }");
+                out.println(".login-container input[type=\"text\"], .login-container input[type=\"password\"] { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }");
+                out.println(".login-container input[type=\"submit\"] { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }");
+                out.println(".login-container input[type=\"submit\"]:hover { background-color: #45a049; }");
+                out.println("</style>");
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<div class=\"login-container\">");
+                out.println("<h1>Đăng nhập vào Hệ Thống Quản lý Công Ty</h1>");
+                out.println("<form action=\"login\" method=\"post\">");
+                out.println("<input type=\"text\" id=\"username\" name=\"username\" placeholder=\"Tên đăng nhập\" required><br>");
+                out.println("<input type=\"password\" id=\"password\" name=\"password\" placeholder=\"Mật khẩu\" required><br><br>");
+                out.println("<input type=\"submit\" value=\"Đăng nhập\">");
+                out.println("</form>");
+                out.println("</div>");
+                out.println("</body>");
+                out.println("</html>");
+            }
         }
+    }
+
+    private boolean validateLogin(String username, String password) {
+        boolean isValid = false;
+        String jdbcURL = "jdbc:mysql://localhost:3306/yourdatabase";
+        String dbUser = "yourdbuser";
+        String dbPassword = "yourdbpassword";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
+            String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, username);
+            statement.setString(2, password);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                isValid = true;
+            }
+
+            connection.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+
+        return isValid;
     }
 
     @Override
