@@ -57,6 +57,32 @@ public class ProductionPlanServlet extends HttpServlet {
             out.println("</div>");
             out.println("<div class=\"container\">");
 
+            // Bảng nhỏ ở đầu trang
+            out.println("<table class=\"table\">");
+            out.println("<tr><th>ProductID</th><th>ProductName</th><th>Quantity</th></tr>");
+
+            try (Connection connection = DatabaseConnection.getConnection()) {
+                String sql = "SELECT ProductID, ProductName, Quantity FROM Product";
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery();
+
+                while (resultSet.next()) {
+                    int productID = resultSet.getInt("ProductID");
+                    String productName = resultSet.getString("ProductName");
+                    int quantity = resultSet.getInt("Quantity");
+
+                    out.println("<tr>");
+                    out.println("<td>" + productID + "</td>");
+                    out.println("<td>" + productName + "</td>");
+                    out.println("<td>" + quantity + "</td>");
+                    out.println("</tr>");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            out.println("</table>");
+
             out.println("<div class=\"menu\">");
             out.println("<button onclick=\"window.location.href='add-plan'\">Thêm Kế Hoạch</button>");
             out.println("</div>");
