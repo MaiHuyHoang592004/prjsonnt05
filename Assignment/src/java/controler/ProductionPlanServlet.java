@@ -33,16 +33,44 @@ public class ProductionPlanServlet extends HttpServlet {
             String[] productIDs = request.getParameterValues("productID");
             String[] quantities = request.getParameterValues("quantity");
 
-            try (Connection connection = DatabaseConnection.getConnection()) {
-                for (int i = 0; i < productIDs.length; i++) {
-                    String sql = "UPDATE PlanCampain SET Quantity = ? WHERE ProductID = ?";
-                    PreparedStatement statement = connection.prepareStatement(sql);
-                    statement.setInt(1, Integer.parseInt(quantities[i]));
-                    statement.setInt(2, Integer.parseInt(productIDs[i]));
-                    statement.executeUpdate();
+            if (productIDs != null && quantities != null) {
+                try (Connection connection = DatabaseConnection.getConnection()) {
+                    for (int i = 0; i < productIDs.length; i++) {
+                        // Update PlanCampain table
+                        String sql = "UPDATE PlanCampain SET Quantity = ? WHERE ProductID = ?";
+                        PreparedStatement statement = connection.prepareStatement(sql);
+                        statement.setInt(1, Integer.parseInt(quantities[i]));
+                        statement.setInt(2, Integer.parseInt(productIDs[i]));
+                        statement.executeUpdate();
+
+                        // Calculate new quantity per employee
+                        int totalQuantity = Integer.parseInt(quantities[i]);
+                        int productID = Integer.parseInt(productIDs[i]);
+
+                        // Get the number of employees assigned to this product
+                        sql = "SELECT COUNT(*) AS EmployeeCount FROM SchedualEmployee se " +
+                              "JOIN SchedualCampaign sc ON se.ScID = sc.ScID " +
+                              "WHERE sc.ProductID = ?";
+                        statement = connection.prepareStatement(sql);
+                        statement.setInt(1, productID);
+                        ResultSet resultSet = statement.executeQuery();
+                        resultSet.next();
+                        int employeeCount = resultSet.getInt("EmployeeCount");
+
+                        // Calculate quantity per employee
+                        int quantityPerEmployee = totalQuantity / employeeCount;
+
+                        // Update SchedualEmployee table
+                        sql = "UPDATE SchedualEmployee SET Quantity = ? WHERE ScID IN " +
+                              "(SELECT sc.ScID FROM SchedualCampaign sc WHERE sc.ProductID = ?)";
+                        statement = connection.prepareStatement(sql);
+                        statement.setInt(1, quantityPerEmployee);
+                        statement.setInt(2, productID);
+                        statement.executeUpdate();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         }
 
@@ -50,7 +78,7 @@ public class ProductionPlanServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Quản Lý Kế Hoạch Sản Xuất</title>");
+            out.println("<title>Lập Lịch Sản Xuất Cơ Bản</title>");
             out.println("<style>");
             out.println("body { font-family: Arial, sans-serif; background-color: #f0f0f0; margin: 0; padding: 0; }");
             out.println(".container { padding: 20px; }");
@@ -69,19 +97,19 @@ public class ProductionPlanServlet extends HttpServlet {
             out.println(".details h2 { margin-top: 0; }");
             out.println("</style>");
             out.println("<script>");
-            out.println("function enableEditing() {");
-            out.println("  var inputs = document.querySelectorAll('.editable');");
+            out.println("function enableEditing(tableId) {");
+            out.println("  var inputs = document.querySelectorAll('#' + tableId + ' .editable');");
             out.println("  for (var i = 0; i < inputs.length; i++) {");
             out.println("    inputs[i].disabled = false;");
             out.println("  }");
-            out.println("  document.getElementById('saveButton').style.display = 'inline-block';");
-            out.println("  document.getElementById('editButton').style.display = 'none';");
+            out.println("  document.getElementById('saveButton-' + tableId).style.display = 'inline-block';");
+            out.println("  document.getElementById('editButton-' + tableId).style.display = 'none';");
             out.println("}");
             out.println("</script>");
             out.println("</head>");
             out.println("<body>");
             out.println("<div class=\"header\">");
-            out.println("<h1>Quản Lý Kế Hoạch Sản Xuất</h1>");
+            out.println("<h1>Lập Lịch Sản Xuất Cơ Bản</h1>");
             out.println("</div>");
             out.println("<div class=\"container\">");
 
@@ -103,7 +131,7 @@ public class ProductionPlanServlet extends HttpServlet {
             // Bảng Đơn Đặt Hàng
             out.println("<h2>Bảng Đơn Đặt Hàng</h2>");
             out.println("<form action=\"production-plan\" method=\"post\">");
-            out.println("<table class=\"table\">");
+            out.println("<table class=\"table\" id=\"orderTable\">");
             out.println("<tr><th>ProductID</th><th>ProductName</th><th>Quantity</th></tr>");
 
             try (Connection connection = DatabaseConnection.getConnection()) {
@@ -131,13 +159,14 @@ public class ProductionPlanServlet extends HttpServlet {
             }
 
             out.println("</table>");
-            out.println("<button type=\"button\" id=\"editButton\" onclick=\"enableEditing()\">Sửa</button>");
-            out.println("<button type=\"submit\" id=\"saveButton\" style=\"display:none;\">Lưu</button>");
+            out.println("<button type=\"button\" id=\"editButton-orderTable\" onclick=\"enableEditing('orderTable')\">Sửa</button>");
+            out.println("<button type=\"submit\" id=\"saveButton-orderTable\" style=\"display:none;\">Lưu</button>");
             out.println("</form>");
 
-            // Bảng Kế Hoạch Biểu
-            out.println("<h2>Bảng Kế Hoạch Biểu</h2>");
-            out.println("<table class=\"table\">");
+            // Bảng Lập Lịch Sản Xuất
+            out.println("<h2>Bảng Lập Lịch Sản Xuất</h2>");
+            out.println("<form action=\"production-plan\" method=\"post\">");
+            out.println("<table class=\"table\" id=\"scheduleTable\">");
             out.println("<tr><th>ScID</th><th>Date</th><th>EmployeeID</th><th>EmployeeName</th><th>Shift</th><th>Tổng Lượng</th><th>Hiệu suất/ngày</th></tr>");
 
             try (Connection connection = DatabaseConnection.getConnection()) {
@@ -163,8 +192,9 @@ public class ProductionPlanServlet extends HttpServlet {
                     out.println("<td>" + employeeID + "</td>");
                     out.println("<td>" + employeeName + "</td>");
                     out.println("<td>" + shift + "</td>");
-                    out.println("<td>" + totalQuantity + "</td>");
-                    out.println("<td>" + dailyPerformance + "</td>");
+                    out.println("<td><input type='number' name='totalQuantity' value='" + totalQuantity + "' class='editable' disabled></td>");
+                    out.println("<td><input type='number' name='dailyPerformance' value='" + dailyPerformance + "' class='editable' disabled></td>");
+                    out.println("<input type='hidden' name='scID' value='" + scID + "'>");
                     out.println("</tr>");
                 }
             } catch (SQLException e) {
@@ -172,6 +202,9 @@ public class ProductionPlanServlet extends HttpServlet {
             }
 
             out.println("</table>");
+            out.println("<button type=\"button\" id=\"editButton-scheduleTable\" onclick=\"enableEditing('scheduleTable')\">Sửa</button>");
+            out.println("<button type=\"submit\" id=\"saveButton-scheduleTable\" style=\"display:none;\">Lưu</button>");
+            out.println("</form>");
 
             out.println("<div class=\"details\">");
             out.println("<h2>Chi Tiết Kế Hoạch</h2>");
