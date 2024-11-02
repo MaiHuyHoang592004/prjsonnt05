@@ -32,7 +32,10 @@ public class EmployeeListServlet extends HttpServlet {
             out.println("<style>");
             out.println("body { font-family: Arial, sans-serif; background-color: #f0f0f0; margin: 0; padding: 0; }");
             out.println(".container { padding: 20px; }");
-            out.println(".header { background-color: #4CAF50; color: white; padding: 10px 0; text-align: center; }");
+            out.println(".header { background-color: #4CAF50; color: white; padding: 10px 0; text-align: center; position: relative; }");
+            out.println(".header .buttons { position: absolute; top: 10px; right: 10px; }");
+            out.println(".header .buttons button { margin-left: 10px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }");
+            out.println(".header .buttons button:hover { background-color: #45a049; }");
             out.println(".table { width: 100%; border-collapse: collapse; margin-top: 20px; }");
             out.println(".table th, .table td { border: 1px solid #ddd; padding: 8px; text-align: left; }");
             out.println(".table th { background-color: #4CAF50; color: white; }");
@@ -43,6 +46,10 @@ public class EmployeeListServlet extends HttpServlet {
             out.println("<body>");
             out.println("<div class=\"header\">");
             out.println("<h1>Danh sách nhân viên</h1>");
+            out.println("<div class=\"buttons\">");
+            out.println("<button onclick=\"window.location.href='dashboard'\">Quay lại</button>");
+            out.println("<button onclick=\"window.location.href='login'\">Home</button>");
+            out.println("</div>");
             out.println("</div>");
             out.println("<div class=\"container\">");
 
