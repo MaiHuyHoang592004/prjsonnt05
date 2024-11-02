@@ -40,7 +40,7 @@ public class ProductionPlanServlet extends HttpServlet {
             out.println(".menu { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin: 20px 0; }");
             out.println(".menu button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }");
             out.println(".menu button:hover { background-color: #45a049; }");
-            out.println(".search-container { margin-bottom: 20px; }");
+            out.println(".search-container { margin-bottom: 20px; text-align: center; }");
             out.println(".search-container input[type=\"date\"], .search-container input[type=\"text\"], .search-container select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin-right: 10px; }");
             out.println(".search-container button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }");
             out.println(".search-container button:hover { background-color: #45a049; }");
@@ -49,13 +49,34 @@ public class ProductionPlanServlet extends HttpServlet {
             out.println(".table th { background-color: #4CAF50; color: white; }");
             out.println(".details { margin-top: 20px; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }");
             out.println(".details h2 { margin-top: 0; }");
+            out.println(".popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }");
+            out.println(".popup .close { position: absolute; top: 10px; right: 10px; cursor: pointer; }");
             out.println("</style>");
+            out.println("<script>");
+            out.println("function openPopup() { document.getElementById('popup').style.display = 'block'; }");
+            out.println("function closePopup() { document.getElementById('popup').style.display = 'none'; }");
+            out.println("</script>");
             out.println("</head>");
             out.println("<body>");
             out.println("<div class=\"header\">");
             out.println("<h1>Quản Lý Kế Hoạch Sản Xuất</h1>");
             out.println("</div>");
             out.println("<div class=\"container\">");
+
+            // Form tìm kiếm
+            out.println("<div class=\"search-container\">");
+            out.println("<form action=\"production-plan\" method=\"get\">");
+            out.println("<input type=\"date\" name=\"searchDate\" value=\"" + (searchDate != null ? searchDate : "") + "\">");
+            out.println("<input type=\"text\" name=\"searchProduct\" placeholder=\"Tìm kiếm sản phẩm...\" value=\"" + (searchProduct != null ? searchProduct : "") + "\">");
+            out.println("<select name=\"searchShift\">");
+            out.println("<option value=\"\">Tất cả ca</option>");
+            out.println("<option value=\"K1\"" + ("K1".equals(searchShift) ? " selected" : "") + ">K1</option>");
+            out.println("<option value=\"K2\"" + ("K2".equals(searchShift) ? " selected" : "") + ">K2</option>");
+            out.println("<option value=\"K3\"" + ("K3".equals(searchShift) ? " selected" : "") + ">K3</option>");
+            out.println("</select>");
+            out.println("<button type=\"submit\">Tìm kiếm</button>");
+            out.println("</form>");
+            out.println("</div>");
 
             // Bảng Đơn Đặt Hàng
             out.println("<h2>Bảng Đơn Đặt Hàng</h2>");
@@ -78,7 +99,7 @@ public class ProductionPlanServlet extends HttpServlet {
                     out.println("<tr>");
                     out.println("<td>" + productID + "</td>");
                     out.println("<td>" + productName + "</td>");
-                    out.println("<td>" + quantity + "</td>");
+                    out.println("<td><input type='number' value='" + quantity + "'></td>");
                     out.println("</tr>");
                 }
             } catch (SQLException e) {
@@ -87,58 +108,36 @@ public class ProductionPlanServlet extends HttpServlet {
 
             out.println("</table>");
 
-            // Bảng SchedualCampaign
-            out.println("<h2>Bảng SchedualCampaign</h2>");
+            // Bảng Kế Hoạch Biểu
+            out.println("<h2>Bảng Kế Hoạch Biểu</h2>");
             out.println("<table class=\"table\">");
-            out.println("<tr><th>ScID</th><th>PlanCampnID</th><th>Date</th><th>Shift</th><th>Quantity</th></tr>");
+            out.println("<tr><th>ScID</th><th>Date</th><th>EmployeeID</th><th>EmployeeName</th><th>Shift</th><th>Tổng Lượng</th><th>Hiệu suất/ngày</th></tr>");
 
             try (Connection connection = DatabaseConnection.getConnection()) {
-                String sql = "SELECT * FROM SchedualCampaign";
+                String sql = "SELECT sc.ScID, sc.Date, se.EmployeeID, e.EmployeeName, sc.Shift, sc.Quantity AS 'Tổng Lượng', se.Quantity AS 'Hiệu suất/ngày' " +
+                             "FROM SchedualCampaign sc " +
+                             "JOIN SchedualEmployee se ON sc.ScID = se.ScID " +
+                             "JOIN Employee e ON se.EmployeeID = e.EmployeeID";
                 PreparedStatement statement = connection.prepareStatement(sql);
                 ResultSet resultSet = statement.executeQuery();
 
                 while (resultSet.next()) {
                     int scID = resultSet.getInt("ScID");
-                    int planCampnID = resultSet.getInt("PlanCampnID");
                     String date = resultSet.getString("Date");
-                    int shift = resultSet.getInt("Shift");
-                    int quantity = resultSet.getInt("Quantity");
-
-                    out.println("<tr>");
-                    out.println("<td>" + scID + "</td>");
-                    out.println("<td>" + planCampnID + "</td>");
-                    out.println("<td>" + date + "</td>");
-                    out.println("<td>" + shift + "</td>");
-                    out.println("<td>" + quantity + "</td>");
-                    out.println("</tr>");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            out.println("</table>");
-
-            // Bảng SchedualEmployee
-            out.println("<h2>Bảng SchedualEmployee</h2>");
-            out.println("<table class=\"table\">");
-            out.println("<tr><th>SchEmpID</th><th>ScID</th><th>EmployeeID</th><th>Quantity</th></tr>");
-
-            try (Connection connection = DatabaseConnection.getConnection()) {
-                String sql = "SELECT * FROM SchedualEmployee";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                ResultSet resultSet = statement.executeQuery();
-
-                while (resultSet.next()) {
-                    int schEmpID = resultSet.getInt("SchEmpID");
-                    int scID = resultSet.getInt("ScID");
                     int employeeID = resultSet.getInt("EmployeeID");
-                    int quantity = resultSet.getInt("Quantity");
+                    String employeeName = resultSet.getString("EmployeeName");
+                    int shift = resultSet.getInt("Shift");
+                    int totalQuantity = resultSet.getInt("Tổng Lượng");
+                    int dailyPerformance = resultSet.getInt("Hiệu suất/ngày");
 
                     out.println("<tr>");
-                    out.println("<td>" + schEmpID + "</td>");
                     out.println("<td>" + scID + "</td>");
+                    out.println("<td>" + date + "</td>");
                     out.println("<td>" + employeeID + "</td>");
-                    out.println("<td>" + quantity + "</td>");
+                    out.println("<td>" + employeeName + "</td>");
+                    out.println("<td>" + shift + "</td>");
+                    out.println("<td>" + totalQuantity + "</td>");
+                    out.println("<td>" + dailyPerformance + "</td>");
                     out.println("</tr>");
                 }
             } catch (SQLException e) {
@@ -148,75 +147,33 @@ public class ProductionPlanServlet extends HttpServlet {
             out.println("</table>");
 
             out.println("<div class=\"menu\">");
-            out.println("<button onclick=\"window.location.href='add-plan'\">Thêm Kế Hoạch</button>");
+            out.println("<button onclick=\"openPopup()\">Thêm Kế Hoạch</button>");
             out.println("</div>");
 
-            out.println("<div class=\"search-container\">");
-            out.println("<form action=\"production-plan\" method=\"get\">");
-            out.println("<input type=\"date\" name=\"searchDate\" value=\"" + (searchDate != null ? searchDate : "") + "\">");
-            out.println("<input type=\"text\" name=\"searchProduct\" placeholder=\"Tìm kiếm sản phẩm...\" value=\"" + (searchProduct != null ? searchProduct : "") + "\">");
-            out.println("<select name=\"searchShift\">");
-            out.println("<option value=\"\">Tất cả ca</option>");
-            out.println("<option value=\"K1\"" + ("K1".equals(searchShift) ? " selected" : "") + ">K1</option>");
-            out.println("<option value=\"K2\"" + ("K2".equals(searchShift) ? " selected" : "") + ">K2</option>");
-            out.println("<option value=\"K3\"" + ("K3".equals(searchShift) ? " selected" : "") + ">K3</option>");
-            out.println("</select>");
-            out.println("<button type=\"submit\">Tìm kiếm</button>");
-            out.println("</form>");
-            out.println("</div>");
-
+            // Popup
+            out.println("<div id=\"popup\" class=\"popup\">");
+            out.println("<span class=\"close\" onclick=\"closePopup()\">&times;</span>");
+            out.println("<h2>Điều chỉnh số lượng</h2>");
             out.println("<table class=\"table\">");
-            out.println("<tr><th>Ngày</th><th>Mã Sản Phẩm</th><th>Tên Sản Phẩm</th><th>Ca</th><th>Số Lượng</th><th>Ghi Chú</th><th>Hành Động</th></tr>");
+            out.println("<tr><th>ProductID</th><th>ProductName</th><th>Quantity</th></tr>");
 
             try (Connection connection = DatabaseConnection.getConnection()) {
-                StringBuilder sql = new StringBuilder("SELECT pc.PlanCampnID, pc.PlanID, p.ProductName, pc.Quantity, pc.Estimate " +
-                                                      "FROM PlanCampain pc " +
-                                                      "JOIN Product p ON pc.ProductID = p.ProductID " +
-                                                      "WHERE 1=1");
-
-                if (searchDate != null && !searchDate.isEmpty()) {
-                    sql.append(" AND pc.Estimate = ?");
-                }
-                if (searchProduct != null && !searchProduct.isEmpty()) {
-                    sql.append(" AND p.ProductName LIKE ?");
-                }
-                if (searchShift != null && !searchShift.isEmpty()) {
-                    sql.append(" AND pc.Shift = ?");
-                }
-
-                PreparedStatement statement = connection.prepareStatement(sql.toString());
-
-                int paramIndex = 1;
-                if (searchDate != null && !searchDate.isEmpty()) {
-                    statement.setString(paramIndex++, searchDate);
-                }
-                if (searchProduct != null && !searchProduct.isEmpty()) {
-                    statement.setString(paramIndex++, "%" + searchProduct + "%");
-                }
-                if (searchShift != null && !searchShift.isEmpty()) {
-                    statement.setString(paramIndex++, searchShift);
-                }
-
+                String sql = "SELECT p.ProductID, p.ProductName, SUM(pc.Quantity) AS Quantity " +
+                             "FROM Product p " +
+                             "JOIN PlanCampain pc ON p.ProductID = pc.ProductID " +
+                             "GROUP BY p.ProductID, p.ProductName";
+                PreparedStatement statement = connection.prepareStatement(sql);
                 ResultSet resultSet = statement.executeQuery();
 
                 while (resultSet.next()) {
-                    int planCampnID = resultSet.getInt("PlanCampnID");
-                    int planID = resultSet.getInt("PlanID");
+                    int productID = resultSet.getInt("ProductID");
                     String productName = resultSet.getString("ProductName");
                     int quantity = resultSet.getInt("Quantity");
-                    String estimate = resultSet.getString("Estimate");
 
                     out.println("<tr>");
-                    out.println("<td>" + estimate + "</td>");
-                    out.println("<td>" + planID + "</td>");
+                    out.println("<td>" + productID + "</td>");
                     out.println("<td>" + productName + "</td>");
-                    out.println("<td>" + "K1" + "</td>"); // Placeholder for shift
-                    out.println("<td>" + quantity + "</td>");
-                    out.println("<td>" + "Ghi chú" + "</td>"); // Placeholder for notes
-                    out.println("<td>");
-                    out.println("<button onclick=\"window.location.href='edit-plan?planCampnID=" + planCampnID + "'\">Chỉnh Sửa</button>");
-                    out.println("<button onclick=\"window.location.href='delete-plan?planCampnID=" + planCampnID + "'\">Xóa</button>");
-                    out.println("</td>");
+                    out.println("<td><input type='number' value='" + quantity + "'></td>");
                     out.println("</tr>");
                 }
             } catch (SQLException e) {
@@ -224,6 +181,8 @@ public class ProductionPlanServlet extends HttpServlet {
             }
 
             out.println("</table>");
+            out.println("<button onclick=\"closePopup()\">Lưu</button>");
+            out.println("</div>");
 
             out.println("<div class=\"details\">");
             out.println("<h2>Chi Tiết Kế Hoạch</h2>");
