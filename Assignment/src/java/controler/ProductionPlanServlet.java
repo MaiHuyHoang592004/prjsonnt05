@@ -105,6 +105,12 @@ public class ProductionPlanServlet extends HttpServlet {
             out.println("  document.getElementById('saveButton-' + tableId).style.display = 'inline-block';");
             out.println("  document.getElementById('editButton-' + tableId).style.display = 'none';");
             out.println("}");
+            out.println("function goBack() {");
+            out.println("  window.location.href = '/dashboard';"); // URL của trang dashboard
+            out.println("}");
+            out.println("function logout() {");
+            out.println("  window.location.href = 'http://localhost:8080/Assignment/login';"); // URL của trang login
+            out.println("}");
             out.println("</script>");
             out.println("</head>");
             out.println("<body>");
@@ -112,6 +118,11 @@ public class ProductionPlanServlet extends HttpServlet {
             out.println("<h1>Lập Lịch Sản Xuất Cơ Bản</h1>");
             out.println("</div>");
             out.println("<div class=\"container\">");
+
+            // Nút Quay lại
+            out.println("<button onclick=\"goBack()\">Quay lại</button>");
+            // Nút Logout
+            out.println("<button onclick=\"logout()\">Logout</button>");
 
             // Form tìm kiếm
             out.println("<div class=\"search-container\">");
@@ -167,19 +178,27 @@ public class ProductionPlanServlet extends HttpServlet {
             out.println("<h2>Bảng Lập Lịch Sản Xuất</h2>");
             out.println("<form action=\"production-plan\" method=\"post\">");
             out.println("<table class=\"table\" id=\"scheduleTable\">");
-            out.println("<tr><th>ScID</th><th>Date</th><th>EmployeeID</th><th>EmployeeName</th><th>Shift</th><th>Tổng Lượng</th><th>Hiệu suất/ngày</th></tr>");
+            out.println("<tr><th>ScID</th><th>Date</th><th>ProductName</th><th>EmployeeID</th><th>EmployeeName</th><th>Shift</th><th>Tổng Lượng</th><th>Hiệu suất/ngày</th></tr>");
 
             try (Connection connection = DatabaseConnection.getConnection()) {
-                String sql = "SELECT sc.ScID, sc.Date, se.EmployeeID, e.EmployeeName, sc.Shift, sc.Quantity AS 'Tổng Lượng', se.Quantity AS 'Hiệu suất/ngày' " +
+                String sql = "SELECT sc.ScID, sc.Date, p.ProductName, se.EmployeeID, e.EmployeeName, sc.Shift, sc.Quantity AS 'Tổng Lượng', se.Quantity AS 'Hiệu suất/ngày' " +
                              "FROM SchedualCampaign sc " +
                              "JOIN SchedualEmployee se ON sc.ScID = se.ScID " +
-                             "JOIN Employee e ON se.EmployeeID = e.EmployeeID";
+                             "JOIN Employee e ON se.EmployeeID = e.EmployeeID " +
+                             "JOIN Product p ON sc.ProductID = p.ProductID";
+                if (searchShift != null && !searchShift.isEmpty()) {
+                    sql += " ORDER BY CASE WHEN sc.Shift = ? THEN 0 ELSE 1 END, sc.Shift";
+                }
                 PreparedStatement statement = connection.prepareStatement(sql);
+                if (searchShift != null && !searchShift.isEmpty()) {
+                    statement.setString(1, searchShift);
+                }
                 ResultSet resultSet = statement.executeQuery();
 
                 while (resultSet.next()) {
                     int scID = resultSet.getInt("ScID");
                     String date = resultSet.getString("Date");
+                    String productName = resultSet.getString("ProductName");
                     int employeeID = resultSet.getInt("EmployeeID");
                     String employeeName = resultSet.getString("EmployeeName");
                     int shift = resultSet.getInt("Shift");
@@ -189,6 +208,7 @@ public class ProductionPlanServlet extends HttpServlet {
                     out.println("<tr>");
                     out.println("<td>" + scID + "</td>");
                     out.println("<td>" + date + "</td>");
+                    out.println("<td>" + productName + "</td>");
                     out.println("<td>" + employeeID + "</td>");
                     out.println("<td>" + employeeName + "</td>");
                     out.println("<td>" + shift + "</td>");
