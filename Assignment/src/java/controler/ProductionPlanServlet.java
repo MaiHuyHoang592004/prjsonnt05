@@ -87,6 +87,66 @@ public class ProductionPlanServlet extends HttpServlet {
 
             out.println("</table>");
 
+            // Bảng SchedualCampaign
+            out.println("<h2>Bảng SchedualCampaign</h2>");
+            out.println("<table class=\"table\">");
+            out.println("<tr><th>ScID</th><th>PlanCampnID</th><th>Date</th><th>Shift</th><th>Quantity</th></tr>");
+
+            try (Connection connection = DatabaseConnection.getConnection()) {
+                String sql = "SELECT * FROM SchedualCampaign";
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery();
+
+                while (resultSet.next()) {
+                    int scID = resultSet.getInt("ScID");
+                    int planCampnID = resultSet.getInt("PlanCampnID");
+                    String date = resultSet.getString("Date");
+                    int shift = resultSet.getInt("Shift");
+                    int quantity = resultSet.getInt("Quantity");
+
+                    out.println("<tr>");
+                    out.println("<td>" + scID + "</td>");
+                    out.println("<td>" + planCampnID + "</td>");
+                    out.println("<td>" + date + "</td>");
+                    out.println("<td>" + shift + "</td>");
+                    out.println("<td>" + quantity + "</td>");
+                    out.println("</tr>");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            out.println("</table>");
+
+            // Bảng SchedualEmployee
+            out.println("<h2>Bảng SchedualEmployee</h2>");
+            out.println("<table class=\"table\">");
+            out.println("<tr><th>SchEmpID</th><th>ScID</th><th>EmployeeID</th><th>Quantity</th></tr>");
+
+            try (Connection connection = DatabaseConnection.getConnection()) {
+                String sql = "SELECT * FROM SchedualEmployee";
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery();
+
+                while (resultSet.next()) {
+                    int schEmpID = resultSet.getInt("SchEmpID");
+                    int scID = resultSet.getInt("ScID");
+                    int employeeID = resultSet.getInt("EmployeeID");
+                    int quantity = resultSet.getInt("Quantity");
+
+                    out.println("<tr>");
+                    out.println("<td>" + schEmpID + "</td>");
+                    out.println("<td>" + scID + "</td>");
+                    out.println("<td>" + employeeID + "</td>");
+                    out.println("<td>" + quantity + "</td>");
+                    out.println("</tr>");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            out.println("</table>");
+
             out.println("<div class=\"menu\">");
             out.println("<button onclick=\"window.location.href='add-plan'\">Thêm Kế Hoạch</button>");
             out.println("</div>");
