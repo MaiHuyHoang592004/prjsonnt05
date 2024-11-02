@@ -57,12 +57,16 @@ public class ProductionPlanServlet extends HttpServlet {
             out.println("</div>");
             out.println("<div class=\"container\">");
 
-            // Bảng nhỏ ở đầu trang
+            // Bảng Đơn Đặt Hàng
+            out.println("<h2>Bảng Đơn Đặt Hàng</h2>");
             out.println("<table class=\"table\">");
             out.println("<tr><th>ProductID</th><th>ProductName</th><th>Quantity</th></tr>");
 
             try (Connection connection = DatabaseConnection.getConnection()) {
-                String sql = "SELECT ProductID, ProductName, Quantity FROM Product";
+                String sql = "SELECT p.ProductID, p.ProductName, SUM(pc.Quantity) AS Quantity " +
+                             "FROM Product p " +
+                             "JOIN PlanCampain pc ON p.ProductID = pc.ProductID " +
+                             "GROUP BY p.ProductID, p.ProductName";
                 PreparedStatement statement = connection.prepareStatement(sql);
                 ResultSet resultSet = statement.executeQuery();
 
@@ -105,16 +109,19 @@ public class ProductionPlanServlet extends HttpServlet {
             out.println("<tr><th>Ngày</th><th>Mã Sản Phẩm</th><th>Tên Sản Phẩm</th><th>Ca</th><th>Số Lượng</th><th>Ghi Chú</th><th>Hành Động</th></tr>");
 
             try (Connection connection = DatabaseConnection.getConnection()) {
-                StringBuilder sql = new StringBuilder("SELECT PlanCampnID, PlanID, ProductID, Quantity, Estimate FROM PlanCampain WHERE 1=1");
+                StringBuilder sql = new StringBuilder("SELECT pc.PlanCampnID, pc.PlanID, p.ProductName, pc.Quantity, pc.Estimate " +
+                                                      "FROM PlanCampain pc " +
+                                                      "JOIN Product p ON pc.ProductID = p.ProductID " +
+                                                      "WHERE 1=1");
 
                 if (searchDate != null && !searchDate.isEmpty()) {
-                    sql.append(" AND Estimate = ?");
+                    sql.append(" AND pc.Estimate = ?");
                 }
                 if (searchProduct != null && !searchProduct.isEmpty()) {
-                    sql.append(" AND ProductID LIKE ?");
+                    sql.append(" AND p.ProductName LIKE ?");
                 }
                 if (searchShift != null && !searchShift.isEmpty()) {
-                    sql.append(" AND Shift = ?");
+                    sql.append(" AND pc.Shift = ?");
                 }
 
                 PreparedStatement statement = connection.prepareStatement(sql.toString());
@@ -135,14 +142,14 @@ public class ProductionPlanServlet extends HttpServlet {
                 while (resultSet.next()) {
                     int planCampnID = resultSet.getInt("PlanCampnID");
                     int planID = resultSet.getInt("PlanID");
-                    String productID = resultSet.getString("ProductID");
+                    String productName = resultSet.getString("ProductName");
                     int quantity = resultSet.getInt("Quantity");
                     String estimate = resultSet.getString("Estimate");
 
                     out.println("<tr>");
                     out.println("<td>" + estimate + "</td>");
                     out.println("<td>" + planID + "</td>");
-                    out.println("<td>" + productID + "</td>");
+                    out.println("<td>" + productName + "</td>");
                     out.println("<td>" + "K1" + "</td>"); // Placeholder for shift
                     out.println("<td>" + quantity + "</td>");
                     out.println("<td>" + "Ghi chú" + "</td>"); // Placeholder for notes
