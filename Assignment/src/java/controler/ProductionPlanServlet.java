@@ -28,6 +28,24 @@ public class ProductionPlanServlet extends HttpServlet {
         String searchProduct = request.getParameter("searchProduct");
         String searchShift = request.getParameter("searchShift");
 
+        if ("POST".equalsIgnoreCase(request.getMethod())) {
+            // Handle form submission to save quantities
+            String[] productIDs = request.getParameterValues("productID");
+            String[] quantities = request.getParameterValues("quantity");
+
+            try (Connection connection = DatabaseConnection.getConnection()) {
+                for (int i = 0; i < productIDs.length; i++) {
+                    String sql = "UPDATE PlanCampain SET Quantity = ? WHERE ProductID = ?";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    statement.setInt(1, Integer.parseInt(quantities[i]));
+                    statement.setInt(2, Integer.parseInt(productIDs[i]));
+                    statement.executeUpdate();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
         try (PrintWriter out = response.getWriter()) {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -49,12 +67,16 @@ public class ProductionPlanServlet extends HttpServlet {
             out.println(".table th { background-color: #4CAF50; color: white; }");
             out.println(".details { margin-top: 20px; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }");
             out.println(".details h2 { margin-top: 0; }");
-            out.println(".popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }");
-            out.println(".popup .close { position: absolute; top: 10px; right: 10px; cursor: pointer; }");
             out.println("</style>");
             out.println("<script>");
-            out.println("function openPopup() { document.getElementById('popup').style.display = 'block'; }");
-            out.println("function closePopup() { document.getElementById('popup').style.display = 'none'; }");
+            out.println("function enableEditing() {");
+            out.println("  var inputs = document.querySelectorAll('.editable');");
+            out.println("  for (var i = 0; i < inputs.length; i++) {");
+            out.println("    inputs[i].disabled = false;");
+            out.println("  }");
+            out.println("  document.getElementById('saveButton').style.display = 'inline-block';");
+            out.println("  document.getElementById('editButton').style.display = 'none';");
+            out.println("}");
             out.println("</script>");
             out.println("</head>");
             out.println("<body>");
@@ -80,6 +102,7 @@ public class ProductionPlanServlet extends HttpServlet {
 
             // Bảng Đơn Đặt Hàng
             out.println("<h2>Bảng Đơn Đặt Hàng</h2>");
+            out.println("<form action=\"production-plan\" method=\"post\">");
             out.println("<table class=\"table\">");
             out.println("<tr><th>ProductID</th><th>ProductName</th><th>Quantity</th></tr>");
 
@@ -99,7 +122,8 @@ public class ProductionPlanServlet extends HttpServlet {
                     out.println("<tr>");
                     out.println("<td>" + productID + "</td>");
                     out.println("<td>" + productName + "</td>");
-                    out.println("<td><input type='number' value='" + quantity + "'></td>");
+                    out.println("<td><input type='number' name='quantity' value='" + quantity + "' class='editable' disabled></td>");
+                    out.println("<input type='hidden' name='productID' value='" + productID + "'>");
                     out.println("</tr>");
                 }
             } catch (SQLException e) {
@@ -107,6 +131,9 @@ public class ProductionPlanServlet extends HttpServlet {
             }
 
             out.println("</table>");
+            out.println("<button type=\"button\" id=\"editButton\" onclick=\"enableEditing()\">Sửa</button>");
+            out.println("<button type=\"submit\" id=\"saveButton\" style=\"display:none;\">Lưu</button>");
+            out.println("</form>");
 
             // Bảng Kế Hoạch Biểu
             out.println("<h2>Bảng Kế Hoạch Biểu</h2>");
@@ -145,44 +172,6 @@ public class ProductionPlanServlet extends HttpServlet {
             }
 
             out.println("</table>");
-
-            out.println("<div class=\"menu\">");
-            out.println("<button onclick=\"openPopup()\">Thêm Kế Hoạch</button>");
-            out.println("</div>");
-
-            // Popup
-            out.println("<div id=\"popup\" class=\"popup\">");
-            out.println("<span class=\"close\" onclick=\"closePopup()\">&times;</span>");
-            out.println("<h2>Điều chỉnh số lượng</h2>");
-            out.println("<table class=\"table\">");
-            out.println("<tr><th>ProductID</th><th>ProductName</th><th>Quantity</th></tr>");
-
-            try (Connection connection = DatabaseConnection.getConnection()) {
-                String sql = "SELECT p.ProductID, p.ProductName, SUM(pc.Quantity) AS Quantity " +
-                             "FROM Product p " +
-                             "JOIN PlanCampain pc ON p.ProductID = pc.ProductID " +
-                             "GROUP BY p.ProductID, p.ProductName";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                ResultSet resultSet = statement.executeQuery();
-
-                while (resultSet.next()) {
-                    int productID = resultSet.getInt("ProductID");
-                    String productName = resultSet.getString("ProductName");
-                    int quantity = resultSet.getInt("Quantity");
-
-                    out.println("<tr>");
-                    out.println("<td>" + productID + "</td>");
-                    out.println("<td>" + productName + "</td>");
-                    out.println("<td><input type='number' value='" + quantity + "'></td>");
-                    out.println("</tr>");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            out.println("</table>");
-            out.println("<button onclick=\"closePopup()\">Lưu</button>");
-            out.println("</div>");
 
             out.println("<div class=\"details\">");
             out.println("<h2>Chi Tiết Kế Hoạch</h2>");
