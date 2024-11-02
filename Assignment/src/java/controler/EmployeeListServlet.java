@@ -57,7 +57,7 @@ public class EmployeeListServlet extends HttpServlet {
             out.println("<h1>Danh sách nhân viên</h1>");
             out.println("<div class=\"buttons\">");
             out.println("<button onclick=\"window.location.href='dashboard'\">Quay lại</button>");
-            out.println("<button onclick=\"window.location.href='logout'\">Logout</button>");
+            out.println("<button onclick=\"window.location.href='login'\">Logout</button>");
             out.println("</div>");
             out.println("</div>");
             out.println("<div class=\"container\">");
