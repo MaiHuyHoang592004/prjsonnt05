@@ -49,9 +49,13 @@ public class DashboardServlet extends HttpServlet {
 
             if ("Quản đốc".equals(role)) {
                 out.println("<div class=\"menu\">");
+                out.println("<a href=\"order-management\">Quản lý đơn hàng</a>");
                 out.println("<a href=\"production-plan\">Kế hoạch sản xuất</a>");
+                out.println("<a href=\"work-assignment\">Phân công công việc</a>");
+                out.println("<a href=\"work-schedule\">Chi tiết ca</a>");
+                out.println("<a href=\"daily-performance\">Hiệu suất hàng ngày</a>");
+                out.println("<a href=\"rewards-penalties\">Thưởng và phạt</a>");
                 out.println("<a href=\"employee-list\">Danh sách nhân viên</a>");
-                out.println("<a href=\"work-schedule\">Thời gian làm việc</a>");
                 out.println("<a href=\"salary\">Tính công</a>");
                 out.println("</div>");
                 out.println("<div class=\"content\">");
@@ -62,19 +66,18 @@ public class DashboardServlet extends HttpServlet {
                 out.println("</div>");
             } else if ("Nhân viên quản lý kế hoạch sản xuất".equals(role)) {
                 out.println("<div class=\"menu\">");
+                out.println("<a href=\"order-management\">Quản lý đơn hàng</a>");
                 out.println("<a href=\"production-plan\">Kế hoạch sản xuất</a>");
-                out.println("<a href=\"employee-list\">Danh sách nhân viên</a>");
+                out.println("<a href=\"work-assignment\">Phân công công việc</a>");
                 out.println("</div>");
                 out.println("<div class=\"content\">");
                 out.println("<h2>Thêm và chỉnh sửa kế hoạch sản xuất</h2>");
                 out.println("<p>Thông tin về kế hoạch sản xuất...</p>");
-                out.println("<h2>Danh sách nhân viên</h2>");
-                out.println("<p>Thông tin về nhân viên...</p>");
                 out.println("</div>");
             } else if ("Công nhân".equals(role)) {
                 out.println("<div class=\"menu\">");
-                out.println("<a href=\"work-schedule\">Thời gian làm việc</a>");
-                out.println("<a href=\"salary\">Bảng công cá nhân</a>");
+                out.println("<a href=\"work-schedule\">Chi tiết ca</a>");
+                out.println("<a href=\"daily-performance\">Hiệu suất hàng ngày</a>");
                 out.println("</div>");
                 out.println("<div class=\"content\">");
                 out.println("<h2>Ca làm việc của bạn</h2>");
