@@ -36,6 +36,8 @@ public class EmployeeListServlet extends HttpServlet {
             out.println(".table { width: 100%; border-collapse: collapse; margin-top: 20px; }");
             out.println(".table th, .table td { border: 1px solid #ddd; padding: 8px; text-align: left; }");
             out.println(".table th { background-color: #4CAF50; color: white; }");
+            out.println(".back-button { margin-top: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }");
+            out.println(".back-button:hover { background-color: #45a049; }");
             out.println("</style>");
             out.println("</head>");
             out.println("<body>");
@@ -46,10 +48,10 @@ public class EmployeeListServlet extends HttpServlet {
 
             if ("Quản đốc".equals(role) || "Nhân viên quản lý kế hoạch sản xuất".equals(role) || "Nhân viên quản lý nhân sự".equals(role)) {
                 out.println("<table class=\"table\">");
-                out.println("<tr><th>EmployeeID</th><th>EmployeeName</th><th>Gender</th><th>Address</th><th>DOB</th><th>RoleID</th><th>DepartmentID</th><th>Salary</th></tr>");
+                out.println("<tr><th>EmployeeID</th><th>EmployeeName</th><th>Gender</th><th>Address</th><th>DOB</th><th>DepartmentID</th><th>Salary</th></tr>");
 
                 try (Connection connection = DatabaseConnection.getConnection()) {
-                    String sql = "SELECT EmployeeID, EmployeeName, Gender, Address, DOB, RoleID, DepartmentID, Salary FROM Employee";
+                    String sql = "SELECT EmployeeID, EmployeeName, Gender, Address, DOB, DepartmentID, Salary FROM Employee";
                     PreparedStatement statement = connection.prepareStatement(sql);
                     ResultSet resultSet = statement.executeQuery();
 
@@ -59,7 +61,6 @@ public class EmployeeListServlet extends HttpServlet {
                         boolean gender = resultSet.getBoolean("Gender");
                         String address = resultSet.getString("Address");
                         String dob = resultSet.getString("DOB");
-                        int roleID = resultSet.getInt("RoleID");
                         int departmentID = resultSet.getInt("DepartmentID");
                         double salary = resultSet.getDouble("Salary");
 
@@ -69,7 +70,6 @@ public class EmployeeListServlet extends HttpServlet {
                         out.println("<td>" + (gender ? "Nam" : "Nữ") + "</td>");
                         out.println("<td>" + address + "</td>");
                         out.println("<td>" + dob + "</td>");
-                        out.println("<td>" + roleID + "</td>");
                         out.println("<td>" + departmentID + "</td>");
                         out.println("<td>" + salary + "</td>");
                         out.println("</tr>");
@@ -79,8 +79,10 @@ public class EmployeeListServlet extends HttpServlet {
                 }
 
                 out.println("</table>");
+                out.println("<button class=\"back-button\" onclick=\"window.location.href='dashboard'\">Quay lại</button>");
             } else {
                 out.println("<p>Bạn không có quyền truy cập vào trang này.</p>");
+                out.println("<button class=\"back-button\" onclick=\"window.location.href='dashboard'\">Quay lại</button>");
             }
 
             out.println("</div>");
