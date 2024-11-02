@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:sqlserver://Admin:1433;databaseName=prj";
+    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=prj;encrypt=true;trustServerCertificate=true";
     private static final String USER = "sa";
     private static final String PASSWORD = "123";
 
