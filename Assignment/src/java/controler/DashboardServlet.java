@@ -28,8 +28,12 @@ public class DashboardServlet extends HttpServlet {
             out.println("body { font-family: Arial, sans-serif; background-color: #f0f0f0; margin: 0; padding: 0; }");
             out.println(".container { padding: 20px; }");
             out.println(".header { background-color: #4CAF50; color: white; padding: 10px 0; text-align: center; }");
-            out.println(".menu { margin: 20px 0; }");
-            out.println(".menu a { margin: 0 10px; text-decoration: none; color: #4CAF50; }");
+            out.println(".menu { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin: 20px 0; }");
+            out.println(".menu a { display: block; width: 200px; padding: 20px; text-align: center; text-decoration: none; color: white; background-color: #4CAF50; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }");
+            out.println(".menu a:hover { background-color: #45a049; }");
+            out.println(".content { margin-top: 20px; }");
+            out.println(".content h2 { margin-bottom: 10px; }");
+            out.println(".content p { margin-bottom: 20px; }");
             out.println("</style>");
             out.println("<script>");
             out.println("window.onload = function() {");
@@ -50,33 +54,43 @@ public class DashboardServlet extends HttpServlet {
                 out.println("<a href=\"work-schedule\">Thời gian làm việc</a>");
                 out.println("<a href=\"salary\">Tính công</a>");
                 out.println("</div>");
+                out.println("<div class=\"content\">");
                 out.println("<h2>Tổng quan các kế hoạch sản xuất đang diễn ra</h2>");
                 out.println("<p>Thông tin về các kế hoạch sản xuất...</p>");
                 out.println("<h2>Số lượng công nhân làm việc trong từng ca</h2>");
                 out.println("<p>Thông tin về số lượng công nhân...</p>");
+                out.println("</div>");
             } else if ("Nhân viên quản lý kế hoạch sản xuất".equals(role)) {
                 out.println("<div class=\"menu\">");
                 out.println("<a href=\"production-plan\">Kế hoạch sản xuất</a>");
                 out.println("</div>");
+                out.println("<div class=\"content\">");
                 out.println("<h2>Thêm và chỉnh sửa kế hoạch sản xuất</h2>");
                 out.println("<p>Thông tin về kế hoạch sản xuất...</p>");
+                out.println("</div>");
             } else if ("Nhân viên quản lý nhân sự".equals(role)) {
                 out.println("<div class=\"menu\">");
                 out.println("<a href=\"employee-list\">Danh sách nhân viên</a>");
                 out.println("<a href=\"work-schedule\">Thời gian làm việc</a>");
                 out.println("</div>");
+                out.println("<div class=\"content\">");
                 out.println("<h2>Danh sách nhân viên</h2>");
                 out.println("<p>Thông tin về nhân viên...</p>");
                 out.println("<h2>Thời gian làm việc của nhân viên</h2>");
                 out.println("<p>Thông tin về thời gian làm việc...</p>");
+                out.println("</div>");
             } else if ("Công nhân".equals(role)) {
+                out.println("<div class=\"content\">");
                 out.println("<h2>Ca làm việc của bạn</h2>");
                 out.println("<p>Thông tin về ca làm việc...</p>");
                 out.println("<h2>Bảng công cá nhân</h2>");
                 out.println("<p>Thông tin về công làm việc...</p>");
+                out.println("</div>");
             } else {
+                out.println("<div class=\"content\">");
                 out.println("<h2>Vai trò không xác định</h2>");
                 out.println("<p>Vui lòng liên hệ quản trị viên để được hỗ trợ.</p>");
+                out.println("</div>");
             }
 
             out.println("</div>");
