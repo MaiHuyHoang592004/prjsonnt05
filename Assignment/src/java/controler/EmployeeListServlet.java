@@ -26,6 +26,7 @@ public class EmployeeListServlet extends HttpServlet {
 
         String searchQuery = request.getParameter("searchQuery");
         String filterGender = request.getParameter("filterGender");
+        String filterAddress = request.getParameter("filterAddress");
 
         try (PrintWriter out = response.getWriter()) {
             out.println("<!DOCTYPE html>");
@@ -64,6 +65,7 @@ public class EmployeeListServlet extends HttpServlet {
             out.println("<div class=\"search-container\">");
             out.println("<form action=\"employee-list\" method=\"get\">");
             out.println("<input type=\"text\" name=\"searchQuery\" placeholder=\"Tìm kiếm nhân viên...\" value=\"" + (searchQuery != null ? searchQuery : "") + "\">");
+            out.println("<input type=\"text\" name=\"filterAddress\" placeholder=\"Tìm kiếm theo địa chỉ...\" value=\"" + (filterAddress != null ? filterAddress : "") + "\">");
             out.println("<select name=\"filterGender\">");
             out.println("<option value=\"\">Tất cả</option>");
             out.println("<option value=\"1\"" + ("1".equals(filterGender) ? " selected" : "") + ">Nam</option>");
@@ -81,7 +83,10 @@ public class EmployeeListServlet extends HttpServlet {
                     StringBuilder sql = new StringBuilder("SELECT EmployeeID, EmployeeName, Gender, Address, DOB, DepartmentID, Salary FROM Employee WHERE 1=1");
 
                     if (searchQuery != null && !searchQuery.isEmpty()) {
-                        sql.append(" AND (EmployeeName LIKE ? OR Address LIKE ?)");
+                        sql.append(" AND (EmployeeName LIKE ?)");
+                    }
+                    if (filterAddress != null && !filterAddress.isEmpty()) {
+                        sql.append(" AND (Address LIKE ?)");
                     }
                     if (filterGender != null && !filterGender.isEmpty()) {
                         sql.append(" AND Gender = ?");
@@ -92,7 +97,9 @@ public class EmployeeListServlet extends HttpServlet {
                     int paramIndex = 1;
                     if (searchQuery != null && !searchQuery.isEmpty()) {
                         statement.setString(paramIndex++, "%" + searchQuery + "%");
-                        statement.setString(paramIndex++, "%" + searchQuery + "%");
+                    }
+                    if (filterAddress != null && !filterAddress.isEmpty()) {
+                        statement.setString(paramIndex++, "%" + filterAddress + "%");
                     }
                     if (filterGender != null && !filterGender.isEmpty()) {
                         statement.setString(paramIndex++, filterGender);
