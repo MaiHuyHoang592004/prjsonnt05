@@ -63,28 +63,35 @@ public class DashboardServlet extends HttpServlet {
             } else if ("Nhân viên quản lý kế hoạch sản xuất".equals(role)) {
                 out.println("<div class=\"menu\">");
                 out.println("<a href=\"production-plan\">Kế hoạch sản xuất</a>");
+                out.println("<a href=\"employee-list\">Danh sách nhân viên</a>");
                 out.println("</div>");
                 out.println("<div class=\"content\">");
                 out.println("<h2>Thêm và chỉnh sửa kế hoạch sản xuất</h2>");
                 out.println("<p>Thông tin về kế hoạch sản xuất...</p>");
-                out.println("</div>");
-            } else if ("Nhân viên quản lý nhân sự".equals(role)) {
-                out.println("<div class=\"menu\">");
-                out.println("<a href=\"employee-list\">Danh sách nhân viên</a>");
-                out.println("<a href=\"work-schedule\">Thời gian làm việc</a>");
-                out.println("</div>");
-                out.println("<div class=\"content\">");
                 out.println("<h2>Danh sách nhân viên</h2>");
                 out.println("<p>Thông tin về nhân viên...</p>");
-                out.println("<h2>Thời gian làm việc của nhân viên</h2>");
-                out.println("<p>Thông tin về thời gian làm việc...</p>");
                 out.println("</div>");
             } else if ("Công nhân".equals(role)) {
+                out.println("<div class=\"menu\">");
+                out.println("<a href=\"work-schedule\">Thời gian làm việc</a>");
+                out.println("<a href=\"salary\">Bảng công cá nhân</a>");
+                out.println("</div>");
                 out.println("<div class=\"content\">");
                 out.println("<h2>Ca làm việc của bạn</h2>");
                 out.println("<p>Thông tin về ca làm việc...</p>");
                 out.println("<h2>Bảng công cá nhân</h2>");
                 out.println("<p>Thông tin về công làm việc...</p>");
+                out.println("</div>");
+            } else if ("Nhân viên quản lý nhân sự".equals(role)) {
+                out.println("<div class=\"menu\">");
+                out.println("<a href=\"employee-list\">Danh sách nhân viên</a>");
+                out.println("<a href=\"salary\">Tính công</a>");
+                out.println("</div>");
+                out.println("<div class=\"content\">");
+                out.println("<h2>Danh sách nhân viên</h2>");
+                out.println("<p>Thông tin về nhân viên...</p>");
+                out.println("<h2>Tính công</h2>");
+                out.println("<p>Thông tin về tính công...</p>");
                 out.println("</div>");
             } else {
                 out.println("<div class=\"content\">");
