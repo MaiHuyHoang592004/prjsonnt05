@@ -19,7 +19,7 @@
 
     <servlet>
         <servlet-name>AttendanceController</servlet-name>
-        <servlet-class>controler.AttendanceController</servlet-class>
+        <servlet-class>attendance.AttendanceController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>AttendanceController</servlet-name>
@@ -54,6 +54,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>ProductionPlanEditController</servlet-name>
+        <servlet-class>productionplan.ProductionPlanEditController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductionPlanEditController</servlet-name>
+        <url-pattern>/productionplan/edit</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>ProductionPlanSearchController</servlet-name>
         <servlet-class>productionplan.ProductionPlanSearchController</servlet-class>
     </servlet>
@@ -70,6 +79,4 @@
         <filter-name>AuthorizationFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
-    <!-- Cấu hình các servlet khác nếu có -->
 </web-app>

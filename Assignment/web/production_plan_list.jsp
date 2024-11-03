@@ -16,7 +16,16 @@
         table, th, td { border: 1px solid #ddd; }
         th, td { padding: 12px; text-align: left; }
         th { background-color: #4CAF50; color: white; }
+        .delete-button { padding: 5px 10px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .delete-button:hover { background-color: #e53935; }
     </style>
+    <script>
+        function confirmDelete(planID) {
+            if (confirm("Are you sure you want to delete this plan?")) {
+                document.getElementById('deleteForm-' + planID).submit();
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -33,6 +42,7 @@
                     <th>End Date</th>
                     <th>Quantity</th>
                     <th>Department ID</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,6 +58,12 @@
                                 <td><%= plan.getEndDate() %></td>
                                 <td><%= plan.getQuantity() %></td>
                                 <td><%= plan.getDepartmentID() %></td>
+                                <td>
+                                    <form id="deleteForm-<%= plan.getPlanID() %>" action="<%= request.getContextPath() %>/productionplan/delete" method="post" style="display:inline;">
+                                        <input type="hidden" name="planID" value="<%= plan.getPlanID() %>">
+                                        <button type="button" class="delete-button" onclick="confirmDelete(<%= plan.getPlanID() %>)">Delete</button>
+                                    </form>
+                                </td>
                             </tr>
                 <%
                         }

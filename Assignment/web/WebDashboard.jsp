@@ -85,19 +85,13 @@
         <h3>Your Role: <%= roleName %></h3>
         <h3>Available Functions:</h3>
         <ul>
-            <li class="<%= roleID == 1 ? "" : "hidden" %>">
+            <li class="<%= (roleID == 1 || roleID == 2) ? "" : "hidden" %>">
                 <a href="<%= request.getContextPath() %>/productionplan/list">Production Plan List</a>
             </li>
-            <li class="<%= roleID == 2 ? "" : "hidden" %>">
+            <li class="<%= (roleID == 2 || roleID == 4) ? "" : "hidden" %>">
                 <a href="<%= request.getContextPath() %>/employee/list">Employee List</a>
             </li>
-            <li class="<%= roleID == 2 ? "" : "hidden" %>">
-                <a href="<%= request.getContextPath() %>/attendance">Attendance</a>
-            </li>
-            <li class="<%= roleID == 4 ? "" : "hidden" %>">
-                <a href="<%= request.getContextPath() %>/employee/list">Employee List</a>
-            </li>
-            <li class="<%= roleID == 4 ? "" : "hidden" %>">
+            <li class="<%= (roleID == 2 || roleID == 4) ? "" : "hidden" %>">
                 <a href="<%= request.getContextPath() %>/attendance">Attendance</a>
             </li>
             <!-- Add more functions as needed -->
