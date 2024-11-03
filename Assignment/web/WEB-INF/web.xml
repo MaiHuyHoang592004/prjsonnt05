@@ -89,6 +89,15 @@
         <url-pattern>/schedule</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>ScheduleListController</servlet-name>
+        <servlet-class>schedule.ScheduleListController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ScheduleListController</servlet-name>
+        <url-pattern>/schedule/list</url-pattern>
+    </servlet-mapping>
+
     <filter>
         <filter-name>AuthorizationFilter</filter-name>
         <filter-class>filter.AuthorizationFilter</filter-class>

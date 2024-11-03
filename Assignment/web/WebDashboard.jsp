@@ -1,8 +1,3 @@
-<%-- 
-    Document   : WebDashboard
-    Created on : Nov 4, 2024, 12:58:18 AM
-    Author     : huyho
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.HashMap" %>
@@ -95,6 +90,9 @@
             </li>
             <li class="<%= (roleID == 1 || roleID == 2) ? "" : "hidden" %>">
                 <a href="<%= request.getContextPath() %>/schedule">Schedule</a>
+            </li>
+            <li class="<%= (roleID == 1 || roleID == 2) ? "" : "hidden" %>">
+                <a href="<%= request.getContextPath() %>/schedule/list">Schedule List</a>
             </li>
             <!-- Add more functions as needed -->
         </ul>
