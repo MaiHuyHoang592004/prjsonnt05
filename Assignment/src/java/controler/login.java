@@ -63,7 +63,7 @@ public class login extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<div class=\"login-container\">");
-            out.println("<img src=\"images/logo.png\" alt=\"Logo Công ty ABC\">");
+            out.println("<img src=\"img/logo.png\" alt=\"Logo Công ty ABC\">");
             out.println("<h1>Đăng nhập vào hệ thống quản lý nhân sự ABC</h1>");
             out.println("<form action=\"login\" method=\"post\">");
             out.println("<input type=\"text\" id=\"username\" name=\"username\" placeholder=\"Tên đăng nhập\" required><br>");
