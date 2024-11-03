@@ -1,6 +1,6 @@
 <%-- 
     Document   : WebDashboard
-    Created on : Nov 3, 2024, 11:00:17 PM
+    Created on : Nov 4, 2024, 12:58:18 AM
     Author     : huyho
 --%>
 
@@ -16,23 +16,19 @@
         h2 { text-align: center; }
         ul { list-style-type: none; padding: 0; }
         li { padding: 8px; background-color: #4CAF50; color: white; margin-bottom: 5px; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Welcome, <%= session.getAttribute("username") %></h2>
-        <h3>Your Accessible Screens:</h3>
+        <h3>Your Role: <%= session.getAttribute("role") %></h3>
+        <h3>Available Functions:</h3>
         <ul>
-            <%
-                List<String> accessibleScreens = (List<String>) session.getAttribute("accessibleScreens");
-                if (accessibleScreens != null) {
-                    for (String screen : accessibleScreens) {
-            %>
-                        <li><%= screen %></li>
-            <%
-                    }
-                }
-            %>
+            <li class="<%= "Admin".equals(session.getAttribute("role")) ? "" : "hidden" %>">Admin Function</li>
+            <li class="<%= "Manager".equals(session.getAttribute("role")) ? "" : "hidden" %>">Manager Function</li>
+            <li class="<%= "Employee".equals(session.getAttribute("role")) ? "" : "hidden" %>">Employee Function</li>
+            <!-- Add more functions as needed -->
         </ul>
     </div>
 </body>

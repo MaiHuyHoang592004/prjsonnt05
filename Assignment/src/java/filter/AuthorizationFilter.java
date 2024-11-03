@@ -1,11 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package filter;
 
 import java.io.IOException;
-import java.util.List;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -37,22 +32,7 @@ public class AuthorizationFilter implements Filter {
         boolean loginRequest = httpRequest.getRequestURI().equals(loginURI);
 
         if (loggedIn || loginRequest) {
-            if (loggedIn) {
-                String role = (String) session.getAttribute("role");
-                List<String> accessibleScreens = (List<String>) session.getAttribute("accessibleScreens");
-                String requestedURI = httpRequest.getRequestURI();
-
-                // Check if the user has access to the requested URI
-                boolean hasAccess = accessibleScreens.stream().anyMatch(requestedURI::contains);
-
-                if (hasAccess) {
-                    chain.doFilter(request, response);
-                } else {
-                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/accessDenied.jsp");
-                }
-            } else {
-                chain.doFilter(request, response);
-            }
+            chain.doFilter(request, response);
         } else {
             httpResponse.sendRedirect(loginURI);
         }

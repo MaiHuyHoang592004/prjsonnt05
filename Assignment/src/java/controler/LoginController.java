@@ -7,8 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,13 +26,11 @@ public class LoginController extends HttpServlet {
             String password = request.getParameter("password");
 
             if (username != null && password != null) {
-                String role = validateLogin(username, password);
-                if (role != null) {
+                if (validateLogin(username, password)) {
                     HttpSession session = request.getSession();
                     session.setAttribute("username", username);
+                    String role = getUserRole(username);
                     session.setAttribute("role", role);
-                    List<String> accessibleScreens = getAccessibleScreens(role);
-                    session.setAttribute("accessibleScreens", accessibleScreens);
                     response.sendRedirect("WebDashboard.jsp");
                     return;
                 } else {
@@ -56,16 +52,31 @@ public class LoginController extends HttpServlet {
         }
     }
 
-    private String validateLogin(String username, String password) {
-        String role = null;
-        String sql = "SELECT r.RoleName FROM [User] u " +
-                     "JOIN UserRole ur ON u.UserName = ur.UserName " +
-                     "JOIN Role r ON ur.RoleID = r.RoleID " +
-                     "WHERE u.UserName = ? AND u.password = ?";
+    private boolean validateLogin(String username, String password) {
+        String sql = "SELECT COUNT(*) FROM [User] WHERE UserName = ? AND Password = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, username);
             statement.setString(2, password);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next() && resultSet.getInt(1) > 0) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private String getUserRole(String username) {
+        String role = null;
+        String sql = "SELECT r.RoleName FROM Role r " +
+                     "JOIN UserRole ur ON r.RoleID = ur.RoleID " +
+                     "WHERE ur.UserName = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, username);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     role = resultSet.getString("RoleName");
@@ -75,26 +86,6 @@ public class LoginController extends HttpServlet {
             e.printStackTrace();
         }
         return role;
-    }
-
-    private List<String> getAccessibleScreens(String role) {
-        List<String> screens = new ArrayList<>();
-        String sql = "SELECT f.FeatureName FROM RoleFeature rf " +
-                     "JOIN Feature f ON rf.FeatureID = f.FeatureID " +
-                     "JOIN Role r ON rf.RoleID = r.RoleID " +
-                     "WHERE r.RoleName = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, role);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    screens.add(resultSet.getString("FeatureName"));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return screens;
     }
 
     @Override
@@ -111,6 +102,6 @@ public class LoginController extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Login Controller";
     }
 }
