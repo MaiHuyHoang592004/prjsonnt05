@@ -15,4 +15,36 @@
         <servlet-name>EmployeeListController</servlet-name>
         <url-pattern>/employee/list</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ProductionPlanCreateController</servlet-name>
+        <servlet-class>productionplan.ProductionPlanCreateController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductionPlanCreateController</servlet-name>
+        <url-pattern>/productionplan/create</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ProductionPlanDeleteController</servlet-name>
+        <servlet-class>productionplan.ProductionPlanDeleteController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductionPlanDeleteController</servlet-name>
+        <url-pattern>/productionplan/delete</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ProductionPlanListController</servlet-name>
+        <servlet-class>productionplan.ProductionPlanListController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductionPlanListController</servlet-name>
+        <url-pattern>/productionplan/list</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ProductionPlanSearchController</servlet-name>
+        <servlet-class>productionplan.ProductionPlanSearchController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductionPlanSearchController</servlet-name>
+        <url-pattern>/productionplan/search</url-pattern>
+    </servlet-mapping>
 </web-app>
