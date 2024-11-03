@@ -71,6 +71,24 @@
         <url-pattern>/productionplan/search</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>WebViewEmployees</servlet-name>
+        <servlet-class>employee.WebViewEmployees</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>WebViewEmployees</servlet-name>
+        <url-pattern>/viewEmployees</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ScheduleController</servlet-name>
+        <servlet-class>schedule.ScheduleController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ScheduleController</servlet-name>
+        <url-pattern>/schedule</url-pattern>
+    </servlet-mapping>
+
     <filter>
         <filter-name>AuthorizationFilter</filter-name>
         <filter-class>filter.AuthorizationFilter</filter-class>
