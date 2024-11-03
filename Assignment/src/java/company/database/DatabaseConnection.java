@@ -9,6 +9,14 @@ public class DatabaseConnection {
     private static final String USER = "sa";
     private static final String PASSWORD = "123";
 
+    static {
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }

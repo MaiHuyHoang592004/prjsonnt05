@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="java.util.List" %>
+<%@ page import="entity.Employee" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,19 +23,34 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Position</th>
-                    <th>Department</th>
+                    <th>Gender</th>
+                    <th>Address</th>
+                    <th>Date of Birth</th>
+                    <th>Role ID</th>
+                    <th>Department ID</th>
+                    <th>Salary</th>
                 </tr>
             </thead>
             <tbody>
-                <c:forEach var="employee" items="${employees}">
+                <%
+                    List<Employee> employees = (List<Employee>) request.getAttribute("employees");
+                    if (employees != null) {
+                        for (Employee employee : employees) {
+                %>
                     <tr>
-                        <td>${employee.id}</td>
-                        <td>${employee.name}</td>
-                        <td>${employee.position}</td>
-                        <td>${employee.department}</td>
+                        <td><%= employee.getEmployeeID() %></td>
+                        <td><%= employee.getEmployeeName() %></td>
+                        <td><%= employee.isGender() ? "Male" : "Female" %></td>
+                        <td><%= employee.getAddress() %></td>
+                        <td><%= employee.getDob() %></td>
+                        <td><%= employee.getRoleID() %></td>
+                        <td><%= employee.getDepartmentID() %></td>
+                        <td><%= employee.getSalary() %></td>
                     </tr>
-                </c:forEach>
+                <%
+                        }
+                    }
+                %>
             </tbody>
         </table>
     </div>
