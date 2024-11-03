@@ -69,30 +69,36 @@
         <%
             // Create a map to map roleID to role names
             Map<Integer, String> roleMap = new HashMap<>();
-            roleMap.put(1, "Admin");
+            roleMap.put(1, "Production Planner");
             roleMap.put(2, "Manager");
             roleMap.put(3, "Employee");
+            roleMap.put(4, "HR Manager");
 
             // Get the roleID from the session
             Integer roleID = (Integer) session.getAttribute("roleID");
-            String roleName = roleMap.get(roleID);
-
             if (roleID == null) {
                 response.sendRedirect("login.jsp"); // Redirect to login page if roleID is null
                 return;
             }
+            String roleName = roleMap.get(roleID);
         %>
         <h3>Your Role: <%= roleName %></h3>
         <h3>Available Functions:</h3>
         <ul>
             <li class="<%= roleID == 1 ? "" : "hidden" %>">
-                <a href="<%= request.getContextPath() %>/employee/list">Danh sách nhân sự</a>
+                <a href="<%= request.getContextPath() %>/productionplan/list">Production Plan List</a>
             </li>
             <li class="<%= roleID == 2 ? "" : "hidden" %>">
-                <a href="<%= request.getContextPath() %>/employee/list">Danh sách nhân sự</a>
+                <a href="<%= request.getContextPath() %>/employee/list">Employee List</a>
             </li>
-            <li class="<%= roleID == 3 ? "" : "hidden" %>">
-                <a href="<%= request.getContextPath() %>/employee/list">Danh sách nhân sự</a>
+            <li class="<%= roleID == 2 ? "" : "hidden" %>">
+                <a href="<%= request.getContextPath() %>/attendance">Attendance</a>
+            </li>
+            <li class="<%= roleID == 4 ? "" : "hidden" %>">
+                <a href="<%= request.getContextPath() %>/employee/list">Employee List</a>
+            </li>
+            <li class="<%= roleID == 4 ? "" : "hidden" %>">
+                <a href="<%= request.getContextPath() %>/attendance">Attendance</a>
             </li>
             <!-- Add more functions as needed -->
         </ul>

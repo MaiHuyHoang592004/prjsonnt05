@@ -1,6 +1,6 @@
 package entity;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class Plan {
     private int planID;
@@ -10,7 +10,7 @@ public class Plan {
     private int quantity;
     private int departmentID;
 
-    // Getters and Setters
+    // Getters and setters
     public int getPlanID() {
         return planID;
     }

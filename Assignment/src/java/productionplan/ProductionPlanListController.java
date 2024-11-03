@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name="ProductionPlanListController", urlPatterns={"/productionplan/list"})
 public class ProductionPlanListController extends HttpServlet {
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         List<Plan> plans = new ArrayList<>();
@@ -36,11 +37,11 @@ public class ProductionPlanListController extends HttpServlet {
                 plan.setDepartmentID(resultSet.getInt("DepartmentID"));
                 plans.add(plan);
             }
-            request.setAttribute("plans", plans);
-            request.getRequestDispatcher("/production_plan_list.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving production plans: " + e.getMessage());
         }
+
+        request.setAttribute("plans", plans);
+        request.getRequestDispatcher("/production_plan_list.jsp").forward(request, response);
     }
 }

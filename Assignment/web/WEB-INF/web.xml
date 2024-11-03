@@ -9,24 +9,6 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>EmployeeCreateController</servlet-name>
-        <servlet-class>controler.EmployeeCreateController</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>EmployeeCreateController</servlet-name>
-        <url-pattern>/employee/create</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>EmployeeDeleteController</servlet-name>
-        <servlet-class>controler.EmployeeDeleteController</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>EmployeeDeleteController</servlet-name>
-        <url-pattern>/employee/delete</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <servlet-name>EmployeeListController</servlet-name>
         <servlet-class>controler.EmployeeListController</servlet-class>
     </servlet>
@@ -36,21 +18,48 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>EmployeeUpdateController</servlet-name>
-        <servlet-class>controler.EmployeeUpdateController</servlet-class>
+        <servlet-name>AttendanceController</servlet-name>
+        <servlet-class>controler.AttendanceController</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>EmployeeUpdateController</servlet-name>
-        <url-pattern>/employee/update</url-pattern>
+        <servlet-name>AttendanceController</servlet-name>
+        <url-pattern>/attendance</url-pattern>
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>EmployeeSearchController</servlet-name>
-        <servlet-class>controler.EmployeeSearchController</servlet-class>
+        <servlet-name>ProductionPlanCreateController</servlet-name>
+        <servlet-class>productionplan.ProductionPlanCreateController</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>EmployeeSearchController</servlet-name>
-        <url-pattern>/employee/search</url-pattern>
+        <servlet-name>ProductionPlanCreateController</servlet-name>
+        <url-pattern>/productionplan/create</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ProductionPlanDeleteController</servlet-name>
+        <servlet-class>productionplan.ProductionPlanDeleteController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductionPlanDeleteController</servlet-name>
+        <url-pattern>/productionplan/delete</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ProductionPlanListController</servlet-name>
+        <servlet-class>productionplan.ProductionPlanListController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductionPlanListController</servlet-name>
+        <url-pattern>/productionplan/list</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ProductionPlanSearchController</servlet-name>
+        <servlet-class>productionplan.ProductionPlanSearchController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductionPlanSearchController</servlet-name>
+        <url-pattern>/productionplan/search</url-pattern>
     </servlet-mapping>
 
     <filter>
