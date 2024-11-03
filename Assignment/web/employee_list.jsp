@@ -34,7 +34,7 @@
             <tbody>
                 <%
                     List<Employee> employees = (List<Employee>) request.getAttribute("employees");
-                    if (employees != null) {
+                    if (employees != null && !employees.isEmpty()) {
                         for (Employee employee : employees) {
                 %>
                     <tr>
@@ -49,6 +49,12 @@
                     </tr>
                 <%
                         }
+                    } else {
+                %>
+                    <tr>
+                        <td colspan="8" style="text-align: center;">No employees found.</td>
+                    </tr>
+                <%
                     }
                 %>
             </tbody>
