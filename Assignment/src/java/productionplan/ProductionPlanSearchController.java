@@ -22,7 +22,7 @@ public class ProductionPlanSearchController extends HttpServlet {
     throws ServletException, IOException {
         String keyword = request.getParameter("keyword");
         List<Plan> plans = new ArrayList<>();
-        String sql = "SELECT * FROM Plan WHERE PlanName LIKE ?";
+        String sql = "SELECT * FROM [Plan] WHERE PlanName LIKE ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {

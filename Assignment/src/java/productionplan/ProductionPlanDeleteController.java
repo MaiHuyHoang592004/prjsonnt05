@@ -18,7 +18,7 @@ public class ProductionPlanDeleteController extends HttpServlet {
     throws ServletException, IOException {
         String planID = request.getParameter("planID");
 
-        String sql = "DELETE FROM Plan WHERE PlanID = ?";
+        String sql = "DELETE FROM [Plan] WHERE PlanID = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
