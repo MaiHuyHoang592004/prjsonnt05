@@ -1,6 +1,7 @@
 package schedule;
 
 import java.sql.Date;
+import java.util.List;
 
 public class Schedule {
     private int scID;
@@ -8,6 +9,7 @@ public class Schedule {
     private Date date;
     private int shift;
     private int quantity;
+    private List<Employee> employees; // Thêm danh sách nhân viên
 
     public int getScID() {
         return scID;
@@ -47,5 +49,13 @@ public class Schedule {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
     }
 }

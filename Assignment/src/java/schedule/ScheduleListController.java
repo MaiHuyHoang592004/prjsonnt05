@@ -34,6 +34,11 @@ public class ScheduleListController extends HttpServlet {
                 schedule.setDate(resultSet.getDate("Date"));
                 schedule.setShift(resultSet.getInt("Shift"));
                 schedule.setQuantity(resultSet.getInt("Quantity"));
+
+                // Lấy danh sách nhân viên cho mỗi lịch làm việc
+                List<Employee> employees = getEmployeesForSchedule(schedule.getScID(), connection);
+                schedule.setEmployees(employees);
+
                 schedules.add(schedule);
             }
         } catch (SQLException e) {
@@ -44,5 +49,24 @@ public class ScheduleListController extends HttpServlet {
 
         request.setAttribute("schedules", schedules);
         request.getRequestDispatcher("/view_schedules.jsp").forward(request, response);
+    }
+
+    private List<Employee> getEmployeesForSchedule(int scID, Connection connection) throws SQLException {
+        List<Employee> employees = new ArrayList<>();
+        String sql = "SELECT e.EmployeeID, e.EmployeeName FROM SchedualEmployee se JOIN Employee e ON se.EmployeeID = e.EmployeeID WHERE se.ScID = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, scID);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Employee employee = new Employee();
+                    employee.setEmployeeID(resultSet.getInt("EmployeeID"));
+                    employee.setEmployeeName(resultSet.getString("EmployeeName"));
+                    employees.add(employee);
+                }
+            }
+        }
+
+        return employees;
     }
 }

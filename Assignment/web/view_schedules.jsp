@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="schedule.Schedule" %>
+<%@ page import="schedule.Employee" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,6 +27,7 @@
                     <th>Date</th>
                     <th>Shift</th>
                     <th>Quantity</th>
+                    <th>Employees</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,6 +42,16 @@
                                 <td><%= schedule.getDate() %></td>
                                 <td><%= schedule.getShift() %></td>
                                 <td><%= schedule.getQuantity() %></td>
+                                <td>
+                                    <%
+                                        List<Employee> employees = schedule.getEmployees();
+                                        if (employees != null) {
+                                            for (Employee employee : employees) {
+                                                out.print(employee.getEmployeeName() + "<br>");
+                                            }
+                                        }
+                                    %>
+                                </td>
                             </tr>
                 <%
                         }
@@ -49,4 +61,4 @@
         </table>
     </div>
 </body>
-</html>>
+</html>
