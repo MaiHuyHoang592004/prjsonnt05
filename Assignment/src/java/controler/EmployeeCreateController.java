@@ -57,7 +57,7 @@ public class EmployeeCreateController extends HttpServlet {
         List<Department> departments = getDepartments();
         request.setAttribute("roles", roles);
         request.setAttribute("departments", departments);
-        request.getRequestDispatcher("/employeeForm.jsp").forward(request, response);
+        request.getRequestDispatcher("/EmployeeForm.jsp").forward(request, response);
     }
 
     private List<Role> getRoles() {

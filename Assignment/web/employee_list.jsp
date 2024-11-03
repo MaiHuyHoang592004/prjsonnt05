@@ -13,11 +13,17 @@
         table, th, td { border: 1px solid #ddd; }
         th, td { padding: 8px; text-align: left; }
         th { background-color: #4CAF50; color: white; }
+        .add-button { margin-bottom: 20px; text-align: right; }
+        .add-button a { padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }
+        .add-button a:hover { background-color: #45a049; }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Employee List</h2>
+        <div class="add-button">
+            <a href="<%= request.getContextPath() %>/employee/create">Add New Employee</a>
+        </div>
         <table>
             <thead>
                 <tr>
@@ -34,27 +40,21 @@
             <tbody>
                 <%
                     List<Employee> employees = (List<Employee>) request.getAttribute("employees");
-                    if (employees != null && !employees.isEmpty()) {
+                    if (employees != null) {
                         for (Employee employee : employees) {
                 %>
-                    <tr>
-                        <td><%= employee.getEmployeeID() %></td>
-                        <td><%= employee.getEmployeeName() %></td>
-                        <td><%= employee.isGender() ? "Male" : "Female" %></td>
-                        <td><%= employee.getAddress() %></td>
-                        <td><%= employee.getDob() %></td>
-                        <td><%= employee.getRoleID() %></td>
-                        <td><%= employee.getDepartmentID() %></td>
-                        <td><%= employee.getSalary() %></td>
-                    </tr>
+                            <tr>
+                                <td><%= employee.getEmployeeID() %></td>
+                                <td><%= employee.getEmployeeName() %></td>
+                                <td><%= employee.isGender() ? "Male" : "Female" %></td>
+                                <td><%= employee.getAddress() %></td>
+                                <td><%= employee.getDob() %></td>
+                                <td><%= employee.getRoleID() %></td>
+                                <td><%= employee.getDepartmentID() %></td>
+                                <td><%= employee.getSalary() %></td>
+                            </tr>
                 <%
                         }
-                    } else {
-                %>
-                    <tr>
-                        <td colspan="8" style="text-align: center;">No employees found.</td>
-                    </tr>
-                <%
                     }
                 %>
             </tbody>

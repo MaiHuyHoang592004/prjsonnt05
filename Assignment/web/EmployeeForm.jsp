@@ -1,9 +1,7 @@
-<%-- 
-    Document   : EmployeeForm
-    Created on : Nov 4, 2024, 1:16:34 AM
-    Author     : huyho
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="entity.Role" %>
+<%@ page import="entity.Department" %>
 <!DOCTYPE html>
 <html>
 <head>
