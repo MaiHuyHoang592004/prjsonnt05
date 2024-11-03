@@ -8,6 +8,51 @@
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>EmployeeCreateController</servlet-name>
+        <servlet-class>controler.EmployeeCreateController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EmployeeCreateController</servlet-name>
+        <url-pattern>/employee/create</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>EmployeeDeleteController</servlet-name>
+        <servlet-class>controler.EmployeeDeleteController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EmployeeDeleteController</servlet-name>
+        <url-pattern>/employee/delete</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>EmployeeListController</servlet-name>
+        <servlet-class>controler.EmployeeListController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EmployeeListController</servlet-name>
+        <url-pattern>/employee/list</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>EmployeeUpdateController</servlet-name>
+        <servlet-class>controler.EmployeeUpdateController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EmployeeUpdateController</servlet-name>
+        <url-pattern>/employee/update</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>EmployeeSearchController</servlet-name>
+        <servlet-class>controler.EmployeeSearchController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EmployeeSearchController</servlet-name>
+        <url-pattern>/employee/search</url-pattern>
+    </servlet-mapping>
+
     <filter>
         <filter-name>AuthorizationFilter</filter-name>
         <filter-class>filter.AuthorizationFilter</filter-class>

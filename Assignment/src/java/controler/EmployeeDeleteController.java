@@ -16,18 +16,18 @@ public class EmployeeDeleteController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String id = request.getParameter("id");
+        int employeeID = Integer.parseInt(request.getParameter("employeeID"));
 
-        String sql = "DELETE FROM employees WHERE id = ?";
+        String sql = "DELETE FROM Employee WHERE EmployeeID = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, id);
+            statement.setInt(1, employeeID);
             statement.executeUpdate();
             response.sendRedirect("list");
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error deleting employee");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error deleting employee: " + e.getMessage());
         }
     }
 }
