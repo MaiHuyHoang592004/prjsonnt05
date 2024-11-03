@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controler;
-
-/**
- *
- * @author huyho
- */
 
 import company.database.DatabaseConnection;
 import entity.Employee;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,20 +19,66 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name="EmployeeSearchController", urlPatterns={"/employee/search"})
 public class EmployeeSearchController extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String keyword = request.getParameter("keyword");
-        List<Employee> employees = searchEmployees(keyword);
+        String gender = request.getParameter("gender");
+        String address = request.getParameter("address");
+        String dob = request.getParameter("dob");
+        String departmentID = request.getParameter("departmentID");
+        String minSalary = request.getParameter("minSalary");
+        String maxSalary = request.getParameter("maxSalary");
+
+        List<Employee> employees = searchEmployees(keyword, gender, address, dob, departmentID, minSalary, maxSalary);
         request.setAttribute("employees", employees);
         request.getRequestDispatcher("/employee_list.jsp").forward(request, response);
     }
 
-    private List<Employee> searchEmployees(String keyword) {
+    private List<Employee> searchEmployees(String keyword, String gender, String address, String dob, String departmentID, String minSalary, String maxSalary) {
         List<Employee> employees = new ArrayList<>();
-        String sql = "SELECT * FROM Employee WHERE EmployeeName LIKE ?";
+        StringBuilder sql = new StringBuilder("SELECT * FROM Employee WHERE EmployeeName LIKE ?");
+        if (gender != null && !gender.isEmpty()) {
+            sql.append(" AND gender = ?");
+        }
+        if (address != null && !address.isEmpty()) {
+            sql.append(" AND address LIKE ?");
+        }
+        if (dob != null && !dob.isEmpty()) {
+            sql.append(" AND dob = ?");
+        }
+        if (departmentID != null && !departmentID.isEmpty()) {
+            sql.append(" AND DepartmentID = ?");
+        }
+        if (minSalary != null && !minSalary.isEmpty()) {
+            sql.append(" AND salary >= ?");
+        }
+        if (maxSalary != null && !maxSalary.isEmpty()) {
+            sql.append(" AND salary <= ?");
+        }
+
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, "%" + keyword + "%");
+             PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+            statement.setString(paramIndex++, "%" + keyword + "%");
+            if (gender != null && !gender.isEmpty()) {
+                statement.setBoolean(paramIndex++, Boolean.parseBoolean(gender));
+            }
+            if (address != null && !address.isEmpty()) {
+                statement.setString(paramIndex++, "%" + address + "%");
+            }
+            if (dob != null && !dob.isEmpty()) {
+                statement.setString(paramIndex++, dob);
+            }
+            if (departmentID != null && !departmentID.isEmpty()) {
+                statement.setInt(paramIndex++, Integer.parseInt(departmentID));
+            }
+            if (minSalary != null && !minSalary.isEmpty()) {
+                statement.setBigDecimal(paramIndex++, new BigDecimal(minSalary));
+            }
+            if (maxSalary != null && !maxSalary.isEmpty()) {
+                statement.setBigDecimal(paramIndex++, new BigDecimal(maxSalary));
+            }
+
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     Employee employee = new Employee();

@@ -24,7 +24,7 @@ public class EmployeeDeleteController extends HttpServlet {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, employeeID);
             statement.executeUpdate();
-            response.sendRedirect("list");
+            response.sendRedirect(request.getContextPath() + "/employee/list");
         } catch (SQLException e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error deleting employee: " + e.getMessage());
