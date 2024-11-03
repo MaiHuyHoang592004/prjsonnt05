@@ -38,7 +38,7 @@
             <tbody>
                 <%
                     List<Plan> plans = (List<Plan>) request.getAttribute("plans");
-                    if (plans != null) {
+                    if (plans != null && !plans.isEmpty()) {
                         for (Plan plan : plans) {
                 %>
                     <tr>
@@ -51,6 +51,12 @@
                     </tr>
                 <%
                         }
+                    } else {
+                %>
+                    <tr>
+                        <td colspan="6" style="text-align: center;">No production plans found.</td>
+                    </tr>
+                <%
                     }
                 %>
             </tbody>

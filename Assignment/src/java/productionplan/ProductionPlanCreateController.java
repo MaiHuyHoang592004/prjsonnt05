@@ -22,7 +22,7 @@ public class ProductionPlanCreateController extends HttpServlet {
         String quantity = request.getParameter("quantity");
         String departmentID = request.getParameter("departmentID");
 
-        String sql = "INSERT INTO Plan (PlanName, StartDate, EndDate, Quantity, DepartmentID) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO [Plan] (PlanName, StartDate, EndDate, Quantity, DepartmentID) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {

@@ -21,7 +21,7 @@ public class ProductionPlanListController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         List<Plan> plans = new ArrayList<>();
-        String sql = "SELECT * FROM Plan";
+        String sql = "SELECT * FROM [Plan]";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql);
@@ -40,7 +40,7 @@ public class ProductionPlanListController extends HttpServlet {
             request.getRequestDispatcher("/production_plan_list.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving production plans");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving production plans: " + e.getMessage());
         }
     }
 }
