@@ -1,13 +1,32 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package attendance;
 
-/**
- *
- * @author huyho
- */
 public class Attendance {
-    
+    private int schEmpID;
+    private float quantity;
+    private float alpha;
+
+    // Getters and setters
+    public int getSchEmpID() {
+        return schEmpID;
+    }
+
+    public void setSchEmpID(int schEmpID) {
+        this.schEmpID = schEmpID;
+    }
+
+    public float getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(float quantity) {
+        this.quantity = quantity;
+    }
+
+    public float getAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(float alpha) {
+        this.alpha = alpha;
+    }
 }
