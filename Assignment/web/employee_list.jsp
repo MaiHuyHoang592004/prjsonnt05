@@ -6,28 +6,41 @@
 <head>
     <title>Employee List</title>
     <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-color-hover: #45a049;
+            --background-gradient: linear-gradient(45deg, #f3ec78, #af4261);
+            --container-bg: rgba(255, 255, 255, 0.9);
+        }
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #f0f0f0; 
             margin: 0; 
             padding: 0; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
+            background: var(--background-gradient);
+            animation: gradient 15s ease infinite;
+            background-size: 400% 400%;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .container { 
             width: 90%; 
             max-width: 1200px; 
             margin: 50px auto; 
             padding: 20px; 
-            background-color: white; 
+            background-color: var(--container-bg); 
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
             border-radius: 10px; 
             animation: fadeIn 1s ease-in-out; 
+            text-align: center;
         }
         h2 { 
-            text-align: center; 
             color: #333; 
             margin-bottom: 20px; 
         }
@@ -44,7 +57,7 @@
             text-align: left; 
         }
         th { 
-            background-color: #4CAF50; 
+            background-color: var(--primary-color); 
             color: white; 
         }
         .add-button, .search-bar { 
@@ -53,7 +66,7 @@
         }
         .add-button a, .search-bar button { 
             padding: 10px 20px; 
-            background-color: #4CAF50; 
+            background-color: var(--primary-color); 
             color: white; 
             text-decoration: none; 
             border-radius: 5px; 
@@ -62,7 +75,7 @@
             transition: background-color 0.3s ease; 
         }
         .add-button a:hover, .search-bar button:hover { 
-            background-color: #45a049; 
+            background-color: var(--primary-color-hover); 
         }
         .search-bar input, .search-bar select { 
             padding: 10px; 
@@ -148,7 +161,6 @@
                     <th>Gender</th>
                     <th>Address</th>
                     <th>Date of Birth</th>
-                    <!-- <th>Role ID</th> Hidden column -->
                     <th>Department ID</th>
                     <th>Salary</th>
                     <th>Actions</th>
@@ -166,7 +178,6 @@
                                 <td><%= employee.isGender() ? "Male" : "Female" %></td>
                                 <td><%= employee.getAddress() %></td>
                                 <td><%= employee.getDob() %></td>
-                                <!-- <td><%= employee.getRoleID() %></td> Hidden column -->
                                 <td><%= employee.getDepartmentID() %></td>
                                 <td><%= employee.getSalary() %></td>
                                 <td>
@@ -184,4 +195,4 @@
         </table>
     </div>
 </body>
-</html>>
+</html>

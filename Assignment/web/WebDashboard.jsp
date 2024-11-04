@@ -4,33 +4,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard</title>
+    <title>Web Dashboard</title>
     <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-color-hover: #45a049;
+            --text-color: #333;
+            --background-gradient: linear-gradient(45deg, #f3ec78, #af4261);
+            --container-bg: rgba(255, 255, 255, 0.9);
+        }
         body { 
             font-family: Arial, sans-serif; 
-            background-color: #f0f0f0; 
             margin: 0; 
             padding: 0; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
+            background: var(--background-gradient);
+            animation: gradient 15s ease infinite;
+            background-size: 400% 400%;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .container { 
             max-width: 800px; 
-            margin: 50px auto; 
             padding: 20px; 
-            background-color: white; 
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+            background-color: var(--container-bg); 
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
             border-radius: 10px; 
             text-align: center; 
+            animation: fadeIn 1s ease-in-out;
         }
-        h2 { 
-            color: #333; 
-            margin-bottom: 20px; 
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        h3 { 
-            color: #555; 
+        h2, h3 { 
+            color: var(--text-color); 
             margin-bottom: 20px; 
         }
         ul { 
@@ -39,18 +53,21 @@
         }
         li { 
             padding: 10px; 
-            background-color: #4CAF50; 
+            background-color: var(--primary-color); 
             color: white; 
             margin-bottom: 10px; 
             border-radius: 5px; 
-            transition: background-color 0.3s ease; 
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
         }
         li:hover { 
-            background-color: #45a049; 
+            background-color: var(--primary-color-hover); 
+            transform: scale(1.05);
         }
         a { 
             color: white; 
             text-decoration: none; 
+            display: block; 
         }
         .hidden { 
             display: none; 
@@ -94,7 +111,11 @@
             <li class="<%= (roleID == 1 || roleID == 2) ? "" : "hidden" %>">
                 <a href="<%= request.getContextPath() %>/schedule/list">Schedule List</a>
             </li>
-            <!-- Add more functions as needed -->
+        </ul>
+        <ul>
+            <li><a href="<%= request.getContextPath() %>/viewAttendance">View Attendance</a></li>
+            <li><a href="<%= request.getContextPath() %>/schedule/list">Schedule List</a></li>
+            <!-- Add other quick links as needed -->
         </ul>
     </div>
 </body>
