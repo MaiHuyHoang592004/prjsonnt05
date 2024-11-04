@@ -12,11 +12,27 @@
         input, select { padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; }
         button { padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; }
         button:hover { background-color: #45a049; }
+        .message { color: green; text-align: center; margin-bottom: 20px; }
+        .error { color: red; text-align: center; margin-bottom: 20px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Record Attendance</h2>
+        <%
+            String message = (String) request.getAttribute("message");
+            String error = (String) request.getAttribute("error");
+            if (message != null) {
+        %>
+            <div class="message"><%= message %></div>
+        <%
+            }
+            if (error != null) {
+        %>
+            <div class="error"><%= error %></div>
+        <%
+            }
+        %>
         <form action="<%= request.getContextPath() %>/attendance" method="post">
             <label for="schEmpID">Schedule Employee ID:</label>
             <input type="number" id="schEmpID" name="schEmpID" required>
@@ -31,5 +47,4 @@
         </form>
     </div>
 </body>
-</html>
 </html>

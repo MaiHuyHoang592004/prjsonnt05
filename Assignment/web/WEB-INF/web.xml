@@ -27,6 +27,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>ViewAttendanceController</servlet-name>
+        <servlet-class>attendance.ViewAttendanceController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ViewAttendanceController</servlet-name>
+        <url-pattern>/viewAttendance</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>ProductionPlanCreateController</servlet-name>
         <servlet-class>productionplan.ProductionPlanCreateController</servlet-class>
     </servlet>

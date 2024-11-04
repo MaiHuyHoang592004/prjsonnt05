@@ -15,6 +15,13 @@ import jakarta.servlet.http.HttpServletResponse;
 public class AttendanceController extends HttpServlet {
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+        // Chuyển hướng đến trang attendance.jsp
+        request.getRequestDispatcher("attendance.jsp").forward(request, response);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         int schEmpID = Integer.parseInt(request.getParameter("schEmpID"));
@@ -29,16 +36,14 @@ public class AttendanceController extends HttpServlet {
             statement.setFloat(2, quantity);
             statement.setFloat(3, alpha);
             statement.executeUpdate();
-            response.sendRedirect("attendance.jsp");
+            // Thông báo thành công
+            request.setAttribute("message", "Attendance recorded successfully.");
+            request.getRequestDispatcher("attendance.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error recording attendance: " + e.getMessage());
+            // Thông báo lỗi
+            request.setAttribute("error", "Error recording attendance: " + e.getMessage());
+            request.getRequestDispatcher("attendance.jsp").forward(request, response);
         }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        request.getRequestDispatcher("/Attendance.jsp").forward(request, response);
     }
 }

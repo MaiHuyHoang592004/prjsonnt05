@@ -4,6 +4,7 @@ import company.database.DatabaseConnection;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet; // Import lớp ResultSet
 import java.sql.SQLException;
 import java.sql.Date;
 import jakarta.servlet.ServletException;
@@ -55,15 +56,28 @@ public class ScheduleController extends HttpServlet {
         int employeeID = Integer.parseInt(request.getParameter("employeeID"));
         int quantity = Integer.parseInt(request.getParameter("quantity"));
 
-        String sql = "INSERT INTO [SchedualEmployee] (ScID, EmployeeID, Quantity) VALUES (?, ?, ?)";
+        // Kiểm tra xem ScID có tồn tại trong bảng SchedualCampaign hay không
+        String checkSql = "SELECT COUNT(*) FROM [SchedualCampaign] WHERE ScID = ?";
+        String insertSql = "INSERT INTO [SchedualEmployee] (ScID, EmployeeID, Quantity) VALUES (?, ?, ?)";
 
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, scID);
-            statement.setInt(2, employeeID);
-            statement.setInt(3, quantity);
-            statement.executeUpdate();
-            response.sendRedirect("schedule.jsp");
+             PreparedStatement checkStatement = connection.prepareStatement(checkSql);
+             PreparedStatement insertStatement = connection.prepareStatement(insertSql)) {
+
+            checkStatement.setInt(1, scID);
+            try (ResultSet resultSet = checkStatement.executeQuery()) {
+                if (resultSet.next() && resultSet.getInt(1) > 0) {
+                    // Nếu ScID tồn tại, thực hiện chèn dữ liệu vào bảng SchedualEmployee
+                    insertStatement.setInt(1, scID);
+                    insertStatement.setInt(2, employeeID);
+                    insertStatement.setInt(3, quantity);
+                    insertStatement.executeUpdate();
+                    response.sendRedirect("schedule.jsp");
+                } else {
+                    // Nếu ScID không tồn tại, trả về lỗi
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid Schedule ID: " + scID);
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error adding employee to schedule: " + e.getMessage());
